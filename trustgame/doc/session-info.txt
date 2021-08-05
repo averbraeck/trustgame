@@ -1,0 +1,139 @@
+What is stored in the session info?
+===================================
+
+username: String
+  the name of the user logged in to this session.
+  if null, no user is logged in.
+  filled by the UserLoginServlet.
+  user by: server and in servlet.
+
+userId: Integer
+  the id of the user logged in to this session.
+  if null, no user is logged in.
+  filled by the UserLoginServlet.
+  user by: server.
+  
+user: UsersRecord
+  the Users record for the logged in user.
+  this record has the USERNAME to display on the screen.
+  filled by the UserLoginServlet.
+  user by: server and in servlet.
+  
+gameUserId: Integer
+  the id of the gameUser for a certain game to play.
+  if null, there is no game to play.
+  filled by the UserLoginServlet (if 1 game for this user) or by the SelectGameServlet (multiple games).
+  user by: server.
+  
+gameUser: GameuserRecord
+  the Gameuser record of the user playing this session.
+  this record maintains the SCORES.
+  filled by the UserLoginServlet (if 1 game for this user) or by the SelectGameServlet (multiple games).
+  user by: server and in servlet.
+
+gamePlayId: Integer
+  the id of the Gameplay for the currently playing user.
+  if null, there is no game to play.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server.
+  
+gamePlay : GameplayRecord
+  the Gameplay record for the currently playing user.
+  this record has the GROUP DESCRIPTION for display.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server and in servlet.
+
+gameId : Integer
+  the id of the static Game information of the currently played game.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server.
+
+game : GameRecord
+  the static Game information of the currently played game.
+  this record has the GAME NAME for display.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server and in servlet.
+  
+organization : PlayerorganizationRecord
+  the static Playerorganization record for the currently played game.
+  this record contains the organization info to display for the current game.
+  this record contains the target scores.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server and in servlet.
+  
+roundMap: SortedMap<Integer, RoundRecord>
+  the static Round records for the currently played game.
+  Map from roundNumber to Round record; there should be one round record per round number.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server.
+  
+orderMap: SortedMap<Integer, List<OrderRecord>>
+  the static Order records as a list PER round number.
+  Maa from roundNumber to Order record; there is a list of orders per rpound. 
+  this has the order information in it.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server.
+  
+orderCarrierMap: Map<Integer, List<OrdercarrierRecord>>
+  the static ordercarrier records as a map from orderID to the carriers who can serve the order.
+  Map from Order.ID to list of carriers serving that order.
+  filled by the SqlUtils.loadAttributes method.
+  user by: server.
+  
+userRoundMap: SortedMap<Integer, UserroundRecord>
+  the dynamic Userround records for the user playing the game.
+  this has the played rounds in it, and can be used to retrieve the current round.
+  Map from roundNumber to UserRound record; there should be one round record per round number.
+  filled by the SqlUtils.loadAttributes method.
+  updated by RoundServlet.
+  user by: server.
+  
+userOrderMap: SortedMap<Integer, List<UserorderRecord>>
+  the dynamic Userorder records as a list PER round number
+  this has the dynamic order information in it, especially whether the order has been published or not.
+  filled by the SqlUtils.loadAttributes method.
+  updated by RoundServlet.
+  user by: server.
+  
+selectedCarrierMap: Map<Integer, SelectedcarrierRecord>
+  the dynamic SelectedCarrier records as a map of UserOrderId to the SelectedCarrier. 
+  there should be zero or one SelectedCarrier per UserOrder.
+  filled by the SqlUtils.loadAttributes method.
+  updated by RoundServlet.
+  user by: server.
+
+
+FULLY DYNAMIC INFO IN THE SESSION
+=================================
+
+roundNumber: int
+  the current round number.
+  when round == -1, the game is over.
+  filled by the SqlUtils.loadAttributes method.
+  updated by RoundServlet.
+  
+menuPopupCarrier: int
+  when 0, do not show popup; when 1: show popup.
+  filled and updated by RoundServlet.
+
+menuChoice: int
+  which menu on the top left has been chosen, to maintain persistence after a POST.
+  0 = empty, 1 = organization, 2 = scores, 3 = orders.
+  set to 0 by the SqlUtils.loadAttributes method.
+  updated by RoundServlet.
+  
+contentChoice: int
+  which content is open on the right side of the screen, , to maintain persistence after a POST.
+  0 = empty, 1 = order overview, 2 = carrier quotes, 3 = truck company overview.
+  set to 0 by the SqlUtils.loadAttributes method.
+  updated by RoundServlet.
+
+
+
+What is stored in the ServletContext?
+=====================================
+ 
+ idSessionMap: Map<Integer, String>
+   map from userId to session id. 
+   can be used to see if a user is logged in in parallel from another browser / session. 
+ 

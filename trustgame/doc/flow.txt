@@ -1,0 +1,57 @@
+Flow and database status trustgame
+==================================
+
+
+GAME INSTANCE
+=============
+
+1. Make GamePlay record for an existing game. 
+
+
+USERS
+=====
+
+1. Make user: just enter data in 'Users' table.
+
+2. Link user to game: Make GameUser record, and link it to User and to GamePlay.
+   Initialize the scores based on the Game's PlayOrganization record information.
+   Set GameUser.RoundNumber = 1.
+
+
+PLAY
+====
+
+1. User logs in. 
+
+2. If no UserRound record exists for the GameUser.RoundNumber:
+   - Make a new UserRound record for the round (day).
+
+3. If a UserRound record exists, take the one with the HIGHEST roundNumber.
+   - Find all unpublished orders for the 'left' menu.
+   - Find all published orders of all rounds for the 'right' menu; order by round.
+   
+4. When Publish order is clicked:
+   - Make UserOrder record with published equal to 'true'.
+   - remove the order from the unpublished orders on the screen
+   - add the order to the published orders at the end
+ 
+5. When Accept quote is clicked:
+   - Create SelectedCarrier record for the selection.
+   
+6. When last order has been chosen for the day:
+   - Show popup with transportation outcome
+   
+7. When pressing "OK" on Transportation outcome:
+   - Increase the round number
+   
+8. If round number > highest round number:
+   - Do not retrieve new orders for that round.
+   - Since the user cannot publish any orders anymore, no new info can be added, but all info can be inspected still.
+   
+9. Go to 2.
+
+   
+Note: published orders without a selected carrier have multiple carriers and 'accept quote' buttons.
+      published orders with a selected carrier for the current round have a 'transportation' icon.
+      published orders with a selected carrier for an earlier round have a stars rating.
+      

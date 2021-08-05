@@ -1,0 +1,6 @@
+DONE! Functie om de sterren en commentaren TOT DE HUIDIGE RONDE te selecteren goed laten werken.
+
+scores max 100%
+scores min 0%
+
+

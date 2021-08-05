@@ -1,0 +1,8 @@
+4-7-2021
+- database: GameUser got field RoundNumber to denote the current round (INT, Unsigned, not null, default value = 1)
+
+18-7-2021
+GameUser got field RoundStatus
+When RoundStatus is 0, order confirmation takes place. The top-right button is grey and contains 'Start of day'.
+When RoundStatus is 1, the user has finished the day and can start scoring the transport. The top-right button is active and contains 'Finish day'.
+When RoundSttaus is 2, the user has finished scoring, and can go to the next day. The top-right button is active and contains Go to next day'.

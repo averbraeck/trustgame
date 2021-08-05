@@ -1,0 +1,79 @@
+Vragen / opmerkingen TrustGame 14-7
+
+1. Moeten we niet in de database opslaan welke carrier info de spelers gekocht hebben? 
+AANGEPAST IN DE DATABASE. 
+
+2. Is Truck Company hetzelfde als Carrier? Verwarrend...
+GEBRUIK ALLEEN HET WOORD CARRIER IN HET SPEL.
+
+3. Welke orders moeten exact getoond worden in de Order Overview? Allemaal vanwege historie? 
+ALLEMAAL.
+
+4. Bij Order Overview nieuwste order bovenaan zetten?
+JA.
+Knop toevoegen bij Order Overview met Transort Outcome!
+
+5. Aangeklikte buttons anders kleuren?
+Ja, Anique komt met voorstel.
+
+6. Details bij Truck company: originele scherm kon niet meer opgevraagd worden -- aangepast.
+Ok.
+
+7. Maak websites en Google smaller als het kan.
+Ok. Anique gaat doen.
+
+8. Scores < 0? Kan je dan nog een report kopen?
+Nee, dan moet je niet kunnen kopen.
+
+9. Scores groter dan max? negatieve scores? Score ook als getal tonen?
+Anique denkt na over aanpassingen.
+
+10. Noot: alle tekst die getoond wordt als HTML opmaken. Dus speciale tekens met b.v. &amp;, &gt;, &lt;, <ul><li> etc.
+Ok en getest.
+
+11. Sterren van reviews ook 5, niet zoals in PPT.
+Klopt, altijd uit 5.
+
+12. Meerdere keren inloggen
+Inderdaad bewaken.
+
+13. Geldigheidsduur gameplay.
+Ja, startdatum en tijd; einddatum en tijd.
+
+14. Duidelijker feedback op de scores per getransporteerde order?
+Ja, tonen op TRANSPORT OUTCOME. Tokens voor de drie oucomes.
+
+15. Published Transport Orders (slide 6 van 21-4) niet op 2 plaatsen zichtbaar?
+KLOPT.
+
+16. Startdatum en einddatum van spelen van een spel voor een groep?
+JA
+
+17. CLient button bij published orders?
+JA
+
+18. Username en 'logout' vermelden in header of footer?
+JA, Anique geeft aan.
+
+19. Logo's van NWO, link naar project, TU Delft, partners op openingsscherm, en TU Delft logo op ronde-scherm?
+Anique maakt ontwerp.
+
+20. Eindscherm wanneer 'game over' met debriefing-informatie?
+JA, Anique maakt ontwerp.
+
+21. Mogelijkheid om opnieuw te spelen inbouwen? Moeten we wel goed in de database regelen!
+NEE nog niet.
+
+22. Als order bevestigd wordt, springen naar Order Overview scherm? Of naar quotes? Of niets doen?
+Goed om te te springen.
+
+23. Afsluiten van de transportdag met apart scherm? Als laatste order van de dag is toegewezen aan een carrier?
+Anique maakt ontwerpje.
+
+24. Database moet nog wat aanpassingen krijgen voor laatste versie; doe ik tegelijk met punt 7 en punt 10.
+Ok.
+
+25. Website gaat draaien op trustgame.tbm.tudeft.nl.
+Ok.
+
+26. Ik neem aan dat de scores aangepast worden als de dag wordt afgesloten.
