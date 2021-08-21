@@ -278,6 +278,7 @@ public final class SqlUtils {
 
         data.setRoundNumber(data.getGameUser().getRoundnumber().intValue());
         readOrInsertUserRoundRecord(data); // will only insert if does not yet exist
+        data.setFooterText(makeFooterText(data));
 
         data.setMenuChoice(1);
         data.setContentChoice(1);
@@ -349,5 +350,22 @@ public final class SqlUtils {
                 break;
             }
         }
+    }
+
+    public static String makeFooterText(final TrustGameData data) {
+        StringBuffer s = new StringBuffer();
+        s.append("Transport day: ");
+        s.append(data.getRoundNumber());
+        if (data.getRoundNumber() > data.getRoundMapByRoundId().size()) {
+            s.append(" (game over)");
+        } else {
+            s.append(" of ");
+            s.append(data.getRoundMapByRoundNumber().size());
+            s.append(" days");
+            if (data.getRoundMapByRoundId().get(data.getRoundNumber()).getTestround() != 0) {
+                s.append(" (practice round)");
+            }
+        }
+        return s.toString();
     }
 }

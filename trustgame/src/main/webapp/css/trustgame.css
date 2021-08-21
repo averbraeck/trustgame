@@ -1339,11 +1339,11 @@ html, body {
   flex-direction: column;
   justify-content: flex-start;
   background-color: #fefefe;
-  left: calc(50vw - 250px);
-  top: calc(50vh - 150px);
+  left: calc(50vw - 300px);
+  top: calc(50vh - 200px);
   border: 1px solid #888;
-  width: 500px;
-  height: 300px;
+  width: 600px;
+  height: 400px;
 }
 
 /* modal window header for client */
@@ -1366,7 +1366,7 @@ html, body {
 }
 
 .tg-modal-button-row {
-  width: 500px;
+  width: 600px;
   height: 50px;
   display: flex;
   flex-direction: row;
@@ -1376,7 +1376,7 @@ html, body {
 .tg-modal-body {
   flex-direction: column;
   justify-content: space-around;
-  width: 480px;
+  width: 580px;
   padding-left: 10px;
   padding-right: 10px;
 }

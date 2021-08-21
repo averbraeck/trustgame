@@ -158,6 +158,11 @@ public class RoundServlet extends HttpServlet {
                     data.setModalWindowHtml(makeOkModalWindow("No money to buy report", s));
                     data.setShowModalWindow(1);
                     LoggingUtils.insertClick(data, "CarrierDetailsBuyReportNoMoney");
+                } else if (data.getRoundNumber() > data.getRoundMapByRoundNumber().size()) {
+                    String s = "<p>You cannot buy this report<br/>Game has finished</p>\n";
+                    data.setModalWindowHtml(makeOkModalWindow("Game over: cannot buy report", s));
+                    data.setShowModalWindow(1);
+                    LoggingUtils.insertClick(data, "CarrierDetailsBuyReportGameOver");
                 } else {
                     CarrierRecord carrier = buyCarrierReport(data, clickedCarrierId);
                     LoggingUtils.insertClickCarrier(data, "CarrierDetailsBuyReport", carrier.getName());
@@ -223,14 +228,18 @@ public class RoundServlet extends HttpServlet {
             gameUser.setRoundstatus(2);
             List<OrderRecord> acceptedOrders = SessionUtils.getAcceptedOrderListForRound(data, data.getRoundNumber());
             for (OrderRecord order : acceptedOrders) {
-                SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
-                OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data,
-                        selectedCarrier.getOrdercarrierId());
-                gameUser.setScoreprofit(gameUser.getScoreprofit() + order.getTransportearnings()
-                        - orderCarrier.getQuoteoffer() + orderCarrier.getExtraprofit());
-                gameUser.setScoresatisfaction(gameUser.getScoresatisfaction() + orderCarrier.getOutcomesatisfaction());
-                gameUser.setScoresustainability(
-                        gameUser.getScoresustainability() + orderCarrier.getOutcomesustainability());
+                // do not store scores when round is a test round
+                if (data.getRoundMapByRoundId().get(order.getRoundId().intValue()).getTestround() == 0) {
+                    SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
+                    OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data,
+                            selectedCarrier.getOrdercarrierId());
+                    gameUser.setScoreprofit(gameUser.getScoreprofit() + order.getTransportearnings()
+                            - orderCarrier.getQuoteoffer() + orderCarrier.getExtraprofit());
+                    gameUser.setScoresatisfaction(
+                            gameUser.getScoresatisfaction() + orderCarrier.getOutcomesatisfaction());
+                    gameUser.setScoresustainability(
+                            gameUser.getScoresustainability() + orderCarrier.getOutcomesustainability());
+                }
             }
             gameUser.store();
             if (data.getContentChoice() == 1)
@@ -240,6 +249,7 @@ public class RoundServlet extends HttpServlet {
 
         } else if ("nextDay".equals(click)) {
             data.setRoundNumber(data.getRoundNumber() + 1);
+            data.setFooterText(SqlUtils.makeFooterText(data));
             data.getGameUser().setRoundnumber(UInteger.valueOf(data.getRoundNumber()));
             data.getGameUser().setRoundstatus(0);
             data.getGameUser().store();
@@ -310,6 +320,9 @@ public class RoundServlet extends HttpServlet {
                 s.append("              <div class=\"tg-menu-order\">\n");
                 s.append("                <div class=\"tg-menu-order-header\">Order #");
                 s.append(order.getOrdernumber());
+                if (data.getRoundMapByRoundId().get(order.getRoundId().intValue()).getTestround() != 0) {
+                    s.append(" (practice round)");
+                }
                 s.append("</div><br/>\n");
                 s.append("                <div class=\"tg-menu-order-body\">");
                 s.append(order.getDescription());
@@ -502,6 +515,9 @@ public class RoundServlet extends HttpServlet {
             s.append("                <div class=\"tg-order\">\n");
             s.append("                  <div class=\"tg-order-header\">Order #");
             s.append(order.getOrdernumber());
+            if (data.getRoundMapByRoundId().get(order.getRoundId().intValue()).getTestround() != 0) {
+                s.append(" (practice round)");
+            }
             s.append("</div>\n");
             s.append("                  <div class=\"tg-order-body\">");
             s.append(order.getDescription());
@@ -1036,7 +1052,10 @@ public class RoundServlet extends HttpServlet {
         String title = "Transport outcome day " + data.getRoundNumber() + " for order #" + order.getOrdernumber();
         s.append("<p style=\"font-size: 1.2em;\"><b>Carrier: " + carrier.getName() + "</b></p>\n<center>");
         s.append(orderCarrier.getOutcomemessage());
-        s.append("</center><br/><br/>\n<table width=\"100%\"><tr><td width=\"25%\">Consequences</td>");
+        s.append("</center><br/>\n");
+        if (data.getRoundMapByRoundId().get(order.getRoundId().intValue()).getTestround() != 0)
+            s.append("<center><i>Practice round (results not counted)</i></center>");
+        s.append("<br/><table width=\"100%\"><tr><td width=\"25%\">Consequences</td>");
         s.append("<td width=\"8%\"><img src=\"images/euro.png\" width=\"24\" height=\"24\" /></td><td width=\"15%\">");
         s.append(order.getTransportearnings() - orderCarrier.getQuoteoffer());
         s.append("</td>\n");
@@ -1140,6 +1159,8 @@ public class RoundServlet extends HttpServlet {
         for (int round = 1; round < data.getRoundNumber(); round++) {
             s.append("           <tr><td>");
             s.append(round);
+            if (data.getRoundMapByRoundId().get(round).getTestround() != 0)
+                s.append (" (Practice)");
             s.append("</td><td>");
             int sprof = 0;
             int ssat = 0;
@@ -1159,11 +1180,20 @@ public class RoundServlet extends HttpServlet {
                 cdr.timesUsed++;
                 cdr.sumUserStars += selectedCarrier.getUserscore();
             }
-            s.append(sprof);
+            if (data.getRoundMapByRoundId().get(round).getTestround() == 0)
+                s.append(sprof);
+            else
+                s.append("(" + sprof + ")");
             s.append("</td><td>");
-            s.append(ssat);
+            if (data.getRoundMapByRoundId().get(round).getTestround() == 0)
+                s.append(ssat);
+            else
+                s.append("(" + ssat + ")");
             s.append("</td><td>");
-            s.append(ssus);
+            if (data.getRoundMapByRoundId().get(round).getTestround() == 0)
+                s.append(ssus);
+            else
+                s.append("(" + ssus + ")");
             s.append("</td></tr>\n");
         }
 
@@ -1171,7 +1201,7 @@ public class RoundServlet extends HttpServlet {
         s.append("           <tr><td>Reports</td><td>");
         s.append(-5 * boughtReports.size());
         s.append("</td><td>-</td><td>-</td></tr>\n");
-        
+
         s.append("           <tr><td>Total</td><td>");
         s.append(data.getGameUser().getScoreprofit());
         s.append("</td><td>");

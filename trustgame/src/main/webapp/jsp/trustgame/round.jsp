@@ -89,7 +89,7 @@
             <p>STEP 5. Go to the next day to receive new orders in the left menu</p>
           </td>
         </tr></table>
-        <div class="tg-round">Transport day: ${trustGameData.getRoundNumber()}</div>
+        <div class="tg-round">${trustGameData.getFooterText()}</div>
       </div>
       
     </div> <!-- tg-page -->

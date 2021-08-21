@@ -173,6 +173,13 @@ public class TrustGameData {
      * displayed by: servlet.
      */
     private String contentHtml = "";
+    
+    /**
+     * The footer text. Contains the round number, or the indication of a practice round.<br>
+     * filled by the application and updated based on the progression of the rounds.<br>
+     * displayed by: servlet.
+     */
+    private String footerText;
 
     /* ================================= */
     /* FULLY DYNAMIC INFO IN THE SESSION */
@@ -482,6 +489,14 @@ public class TrustGameData {
 
     public void setDayButton(String dayButton) {
         this.dayButton = dayButton;
+    }
+
+    public String getFooterText() {
+        return footerText;
+    }
+
+    public void setFooterText(String footerText) {
+        this.footerText = footerText;
     }
 
 }
