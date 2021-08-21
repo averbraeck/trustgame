@@ -910,8 +910,8 @@ html, body {
 
 .tg-carrier-report-official {
   display: block;
-  font-size: 1.2em;
-  font-weight: normal;
+  font-size: 1.3em;
+  font-weight: bold;
   margin-top: 10px;
   color: orange;
 }
@@ -920,20 +920,33 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 34%;
+  width: 33%;
   padding-right: 20px;
+}
+
+.tg-carrier-fb-graph {
+  margin-bottom: 15px;
+  width: 100%;  
+}
+
+.tg-carrier-report-col2 img {
+  width: 100%;
 }
 
 .tg-carrier-report-col3 {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 32%;
+  width: 33%;
+}
+
+.tg-carrier-report-col3 img {
+  width: 100%;
 }
 
 .tg-carrier-report-header {
   display: block;
-  font-size: 1.5em;
+  font-size: 1.3em;
   font-weight: bold;
   margin-top: 25px;
   margin-bottom: 10px; 

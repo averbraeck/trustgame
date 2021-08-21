@@ -226,8 +226,8 @@ public class RoundServlet extends HttpServlet {
                 SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
                 OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data,
                         selectedCarrier.getOrdercarrierId());
-                gameUser.setScoreprofit(gameUser.getScoreprofit() + order.getTransportearnings() - orderCarrier.getQuoteoffer()
-                        + orderCarrier.getExtraprofit());
+                gameUser.setScoreprofit(gameUser.getScoreprofit() + order.getTransportearnings()
+                        - orderCarrier.getQuoteoffer() + orderCarrier.getExtraprofit());
                 gameUser.setScoresatisfaction(gameUser.getScoresatisfaction() + orderCarrier.getOutcomesatisfaction());
                 gameUser.setScoresustainability(
                         gameUser.getScoresustainability() + orderCarrier.getOutcomesustainability());
@@ -439,7 +439,7 @@ public class RoundServlet extends HttpServlet {
         s.append("            </div>\n");
         return s.toString();
     }
-    
+
     public static void handleOrderContent(TrustGameData data) {
         List<OrderRecord> orderList = SessionUtils.getConfirmedOrderListUpToRound(data, data.getRoundNumber());
         StringBuilder s = new StringBuilder();
@@ -594,9 +594,9 @@ public class RoundServlet extends HttpServlet {
             s.append("              </div>\n");
 
         }
-        
+
         s.append("            </div>\n"); // tg-orders
-        
+
         data.setContentHtml(s.toString());
     }
 
@@ -744,7 +744,11 @@ public class RoundServlet extends HttpServlet {
             s.append("    </div>\n");
             s.append("    <hr />\n"); // ask-buttons
             s.append("  </div>\n"); // carrier-review
-        } else {
+        }
+
+        else
+
+        {
             s.append("\n<div class=\"tg-carrier-report\">\n");
             s.append("  <div class=\"tg-carrier-report-columns\">\n");
 
@@ -757,75 +761,44 @@ public class RoundServlet extends HttpServlet {
             s.append("</div>\n"); // carrier-details-name
             s.append("      <div class=\"tg-carrier-details-stars\">");
             CarrierreviewRecord carrierReview = SqlUtils.getCarrierReview(data, carrier.getId(), data.getRoundNumber());
+            FbreportRecord fb = SqlUtils.readFBReportForCarrierId(data, carrier.getId());
             s.append(formatStars(carrierReview == null ? 0.0 : carrierReview.getOverallstars()));
             s.append("      </div>\n"); // carrier-details-stars
             s.append("      <hr />\n");
             s.append("      <div class=\"tg-carrier-report-official\">Official report by FreightBooking.com</div>\n");
+            s.append("      <div class=\"tg-carrier-report-header\">General information</div>\n");
+            s.append("      <div class=\"tg-carrier-report-line\">Registration number:<br/>");
+            s.append(fb.getFbregistration());
+            s.append("</div>\n");
+            s.append("      <div class=\"tg-carrier-report-line\">Country: ");
+            s.append(fb.getCountrycode());
+            s.append("</div>\n");
+            s.append("      <div class=\"tg-carrier-report-line\">Address company:<br/>");
+            s.append(fb.getAddress());
+            s.append("</div>\n");
+            s.append("      <div class=\"tg-carrier-report-line\">Freightbooking member since:<br/>");
+            s.append(fb.getFbmembersince());
+            s.append("</div>\n");
             s.append("    </div>\n"); // carrier-report-col1
 
             // col2
-            FbreportRecord fb = SqlUtils.readFBReportForCarrierId(data, carrier.getId());
             s.append("    <div class=\"tg-carrier-report-col2\">\n");
-            if (fb == null) {
-                s.append("INTERNAL ERROR.<br>FREIGHTBOOKING REPORT NOT FOUND");
-            } else {
-                s.append("      <div class=\"tg-carrier-report-header\">General information</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">Registration number:<br/>");
-                s.append(fb.getFbregistration());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">Country: ");
-                s.append(fb.getCountrycode());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">Address company::<br/>");
-                s.append(fb.getAddress());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">Freightbooking member since:<br/>");
-                s.append(fb.getFbmembersince());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-header\">Company details</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">BTW number: ");
-                s.append(fb.getBtwnr());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">ISO certificate: ");
-                s.append(fb.getIso());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">Contact: ");
-                s.append(fb.getContact());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-header\">Other information</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">");
-                s.append(fb.getOtherinfo() == null ? "None" : fb.getOtherinfo());
-                s.append("</div>\n");
-            }
+            s.append("      <div class=\"tg-carrier-report-header\">Services</div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
+                    + carrier.getId() + "&image=1" + "\" /></div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
+                    + carrier.getId() + "&image=2" + "\" /></div>\n");
             s.append("    </div>\n"); // carrier-report-col2
 
             // col3
             s.append("    <div class=\"tg-carrier-report-col3\">\n");
-            if (fb == null) {
-                s.append("INTERNAL ERROR.<br>FREIGHTBOOKING REPORT NOT FOUND");
-            } else {
-                String noInfo = "No information provided by " + carrier.getName();
-                s.append("      <div class=\"tg-carrier-report-header\">Services</div>\n");
-                s.append("      <div class=\"tg-carrier-report-subheader\">Capacity</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">");
-                s.append(fb.getCapacity() == null ? noInfo : fb.getCapacity());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-subheader\">Employees</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">");
-                s.append(fb.getEmployees() == null ? noInfo : fb.getEmployees());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-subheader\">Reliability</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">");
-                s.append(fb.getReliability() == null ? noInfo : fb.getReliability());
-                s.append("</div>\n");
-                s.append("      <div class=\"tg-carrier-report-header\">Technical details</div>\n");
-                s.append("      <div class=\"tg-carrier-report-subheader\">Fleet characteristics</div>\n");
-                s.append("      <div class=\"tg-carrier-report-line\">");
-                s.append(fb.getFleetcharacteristics() == null ? noInfo : fb.getFleetcharacteristics());
-                s.append("</div>\n");
-
-            }
+            s.append("      <div class=\"tg-carrier-report-header\">Technical details</div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
+                    + carrier.getId() + "&image=3" + "\" /></div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
+                    + carrier.getId() + "&image=4" + "\" /></div>\n");
             s.append("    </div>\n"); // carrier-report-col3
+
             s.append("  </div>\n"); // carrier-report-columns
             s.append("</div>\n"); // carrier-report
         }
@@ -844,6 +817,7 @@ public class RoundServlet extends HttpServlet {
         userCarrier.setCarrierId(clickedCarrierId);
         userCarrier.setGameuserId(data.getGameUserId());
         userCarrier.setBoughtreport((byte) 1);
+        userCarrier.setRoundnumber(data.getRoundNumber());
         userCarrier.store();
         return handleCarrierReport(data, clickedCarrierId);
     }
@@ -1103,7 +1077,7 @@ public class RoundServlet extends HttpServlet {
         data.setModalWindowHtml(makeOkModalWindow("Thanks for your review!", s.toString()));
         data.setShowModalWindow(1);
     }
-    
+
     private void handleDebrief(TrustGameData data) {
         StringBuffer s = new StringBuffer();
         s.append("\n<div class=\"tg-debrief\">\n");
@@ -1112,9 +1086,10 @@ public class RoundServlet extends HttpServlet {
         s.append("  <div class=\"tg-debrief-container\">\n");
         s.append("    <div class=\"tg-debrief-round-table\">\n");
         s.append("      <table>\n");
-        s.append("        <thead><tr><td>Round</td><td>Profit</td><td>Satisfaction</td><td>Sustainability</td></tr></thead>\n");
+        s.append(
+                "        <thead><tr><td>Round</td><td>Profit</td><td>Satisfaction</td><td>Sustainability</td></tr></thead>\n");
         s.append("        <tbody>\n");
-        
+
         s.append("           <tr><td>Start</td><td>");
         s.append(data.getOrganization().getStartprofit());
         s.append("</td><td>");
@@ -1122,7 +1097,7 @@ public class RoundServlet extends HttpServlet {
         s.append("</td><td>");
         s.append(data.getOrganization().getStartsustainability());
         s.append("</td></tr>\n");
-        
+
         SortedSet<Integer> carrierIds = new TreeSet<>();
         for (Integer orderNr : data.getOrderCarrierMap().keySet()) {
             for (OrdercarrierRecord orderCarrier : data.getOrderCarrierMap().get(orderNr)) {
@@ -1139,7 +1114,7 @@ public class RoundServlet extends HttpServlet {
             CarrierreviewRecord carrierReview = SqlUtils.getCarrierReview(data, carrierId, data.getRoundNumber());
             cdr.fbstars = carrierReview.getOverallstars();
         }
-        
+
         for (int round = 1; round < data.getRoundNumber(); round++) {
             s.append("           <tr><td>");
             s.append(round);
@@ -1151,8 +1126,7 @@ public class RoundServlet extends HttpServlet {
                 SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
                 OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data,
                         selectedCarrier.getOrdercarrierId());
-                sprof += order.getTransportearnings() - orderCarrier.getQuoteoffer()
-                        + orderCarrier.getExtraprofit();
+                sprof += order.getTransportearnings() - orderCarrier.getQuoteoffer() + orderCarrier.getExtraprofit();
                 ssat += orderCarrier.getOutcomesatisfaction();
                 ssus += orderCarrier.getOutcomesustainability();
                 CarrierDebriefRecord cdr = carrierDebriefMap.get(orderCarrier.getCarrierId());
@@ -1170,7 +1144,7 @@ public class RoundServlet extends HttpServlet {
             s.append(ssus);
             s.append("</td></tr>\n");
         }
-        
+
         s.append("           <tr><td>Total</td><td>");
         s.append(data.getGameUser().getScoreprofit());
         s.append("</td><td>");
@@ -1182,20 +1156,20 @@ public class RoundServlet extends HttpServlet {
         s.append("        </tbody>\n");
         s.append("      </table>\n");
         s.append("    </div>\n"); // debrief-round-table
-        
+
         s.append("    <div class=\"tg-debrief-carrier-table\">\n");
         s.append("      <table>\n");
         s.append("        <thead><tr><td>Carrier</td><td>Times used</td><td>Your stars</td><td>FB stars</td>");
         s.append("<td>Profit</td><td>Satisfaction</td><td>Sustainability</td></tr></thead>\n");
         s.append("        <tbody>\n");
-        
+
         for (CarrierDebriefRecord cdr : carrierDebriefMap.values()) {
             s.append("           <tr><td>");
             s.append(cdr.name);
             s.append("</td><td>");
             s.append(cdr.timesUsed);
             s.append("</td><td>");
-            double stars = cdr.timesUsed == 0 ? 0.0 : 0.5 * Math.round(2.0 * cdr.sumUserStars / cdr.timesUsed); 
+            double stars = cdr.timesUsed == 0 ? 0.0 : 0.5 * Math.round(2.0 * cdr.sumUserStars / cdr.timesUsed);
             s.append(formatStars(stars));
             s.append("</td><td>");
             s.append(formatStars(cdr.fbstars));
@@ -1211,12 +1185,12 @@ public class RoundServlet extends HttpServlet {
         s.append("        </tbody>\n");
         s.append("      </table>\n");
         s.append("    </div>\n"); // debrief-carrier-table
-                
+
         s.append("  </div>\n"); // debrief-container
         s.append("</div>\n"); // debrief
         data.setContentHtml(s.toString());
     }
-    
+
     class CarrierDebriefRecord {
         public int id;
         public String name;
