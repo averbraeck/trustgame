@@ -336,7 +336,8 @@ html, body {
 .tg-menu-score {
   flex-direction: column;
   width: 300px;
-  height: 95%;
+  margin-left: 10px;
+  height: calc(70vh - 160px);
   overflow: hidden;
 }
 
@@ -349,102 +350,37 @@ html, body {
   margin-top: 10px;
   width: 300px;
   height: 50px;
-}
-
-.tg-menu-score-row {
-  display: flex;
-  flex-direction: row;
-  width: 300px;
-  height: 40px;
-  text-align: center;
-}
-
-.tg-menu-score-leftcol {
-  display: flex;
-  width: 40px;
-}
-
-.tg-menu-max-score {
-  font-size: 0.8em;
-  text-align: center;
-  margin-top: 5px;
-  width: 80px;
-}
-
-.tg-menu-goal-score {
-  position: relative;
-  display: inline-flex;
-  font-size: 0.8em;
-  text-align: left;
-  width: 75px;  
-}
-
-.tg-menu-goal-text {
-  position: relative;
-  display: inline-flex;
-  font-size: 1em;
-  text-align: left;
-}
-
-.tg-menu-score-dashline {
-  position: absolute;
-  top: calc(33vh + 29px);
-  width: 240px;
-  margin-left: 45px;
-  border-bottom: 1px dashed teal;
-}
-
-.tg-menu-middle-row {
-  position: absolute;
-  flex-direction: row;
-  top: calc(33vh + 10px);
-  min-width: 300px;
-  width: 300px;
-  height: 40px;
-}
-
-.tg-menu-score-progress-icon {
-  display: flex;
-  width: 80px;
-  height: 40px;
-  margin-top: 10px;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
-.tg-menu-score-progress-icon > img {
-  width: 24px;
-  height: 24px;
-  margin-left: 28px;
-  margin-top: 6px;
-}
-
-.tg-menu-score-bars {
-  display: flex;
+.tg-menu-score-body {
   flex-direction: row;
-  height: calc(100% - 200px);
   width: 300px;
+  height: calc(70vh - 260px);
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
-.tg-menu-score-progress {
-  display: flex;
-  width: 80px;
+.tg-menu-score-col {
+  display: inline-block;
+  width: 95px;
 }
 
 .tg-menu-score-progress-bar {
-  display: flex;
+  display: block;
   position: relative;
-  width: 80px;
+  width: 32px;
+  height: calc(70vh - 280px);
   border: solid grey 1px;
-  margin-left: 25px;
-  margin-right: 25px;
+  margin-left: 40px;
   padding: 0px;
   border-radius: 10px;
 }
 
 .tg-menu-score-progress-bar-bottom {
-  width: 28px;
-  display: block;
+  width: 32px;
+  display: inline;
   background-color: teal; /* to be overridden to red if below target */
   color: white;
   text-align: center;
@@ -457,6 +393,69 @@ html, body {
 
 .tg-menu-score-progress-bar-bottom > p {
   margin-top: 4px;
+}
+
+.tg-menu-max-score {
+  display: block;
+  position: absolute;
+  font-size: 0.8em;
+  text-align: right;
+  top: 150px;
+  width: 35px;
+}
+
+.tg-menu-min-score {
+  display: block;
+  position: absolute;
+  font-size: 0.8em;
+  text-align: right;
+  top: calc(70vh - 130px);
+  width: 35px;
+}
+
+.tg-menu-goal-text {
+  display: block;
+  position: absolute;
+  font-size: 0.8em;
+  text-align: right;
+  top: calc(35vh + 50px); /* 50% */
+  width: 35px;
+}
+
+.tg-menu-goal-score {
+  display: block;
+  position: absolute;
+  font-size: 0.8em;
+  text-align: right;
+  top: calc(35vh + 60px); /* 50% */
+  width: 35px;
+}
+
+.tg-menu-score-dashline {
+  position: absolute;
+  top: calc(35vh + 58px); /* 50% */
+  width: 50px;
+  margin-left: 30px;
+  border-bottom: 1px dashed teal;
+}
+
+.tg-menu-score-footer {
+  display: flex;
+  width: 300px;
+  height: 50px;
+  margin-top: 16px;
+}
+
+.tg-menu-score-progress-icon {
+  display: inline-block;
+  width: 100px;
+  height: 50px;
+}
+
+.tg-menu-score-progress-icon > img {
+  width: 24px;
+  height: 24px;
+  margin-left: 43px;
 }
 
 /* ****** */

@@ -71,21 +71,7 @@ public class UserLoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        MessageDigest md;
-        String hashedPassword;
-        try {
-            // https://www.baeldung.com/java-md5
-            md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            byte[] digest = md.digest();
-            hashedPassword = DatatypeConverter.printHexBinary(digest).toLowerCase();
-        } catch (NoSuchAlgorithmException e1) {
-            throw new ServletException(e1);
-        }
         HttpSession session = request.getSession();
-
         TrustGameData data = new TrustGameData();
         session.setAttribute("trustGameData", data);
         try {
@@ -94,42 +80,83 @@ public class UserLoginServlet extends HttpServlet {
             throw new ServletException(e);
         }
 
-        UserRecord user = SqlUtils.readUserFromUsername(data, username);
-        String userPassword = user == null ? "" : user.getPassword() == null ? "" : user.getPassword();
-        if (user != null && userPassword.equals(hashedPassword)) {
-            data.setUsername(user.getName());
-            data.setUserId(user.getId());
-            data.setUser(user);
-            @SuppressWarnings("unchecked")
-            Map<Integer, String> idSessionMap = (Map<Integer, String>) request.getServletContext()
-                    .getAttribute("idSessionMap");
-            if (idSessionMap == null) {
-                idSessionMap = new HashMap<>();
-                request.getServletContext().setAttribute("idSessionMap", idSessionMap);
-            }
-            idSessionMap.put(user.getId(), request.getSession().getId());
-            List<GameuserRecord> gameUserRecords = SqlUtils.readGameUsersFromUserId(data, user.getId());
-            if (gameUserRecords.size() == 0) {
+        UserRecord user;
+        String userCode = request.getParameter("usercode");
+        if (userCode != null && userCode.length() > 0) {
+            user = SqlUtils.readUserFromUserCode(data, userCode);
+            if (user == null) {
                 session.removeAttribute("trustGameData");
-                response.sendRedirect("jsp/trustgame/nogame.jsp");
-            } else if (gameUserRecords.size() == 1) {
-                Integer gameUserId = gameUserRecords.get(0).getId();
-                data.setGameUserId(gameUserId);
-                data.setGameUser(gameUserRecords.get(0));
-                SqlUtils.loadAttributes(session, gameUserId);
-                response.sendRedirect("jsp/trustgame/round.jsp");
-            } else {
-                response.sendRedirect("jsp/trustgame/selectgame.jsp");
+                response.sendRedirect("jsp/trustgame/login.jsp");
+                return;
             }
-        } else {
+        }
+
+        else
+
+        {
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
+            MessageDigest md;
+            String hashedPassword;
+            try {
+                // https://www.baeldung.com/java-md5
+                md = MessageDigest.getInstance("MD5");
+                md.update(password.getBytes());
+                byte[] digest = md.digest();
+                hashedPassword = DatatypeConverter.printHexBinary(digest).toLowerCase();
+            } catch (NoSuchAlgorithmException e1) {
+                throw new ServletException(e1);
+            }
+
+            user = SqlUtils.readUserFromUsername(data, username);
+            if (user == null) {
+                session.removeAttribute("trustGameData");
+                response.sendRedirect("jsp/trustgame/login.jsp");
+                return;
+            }
+            String userPassword = user.getPassword() == null ? "" : user.getPassword();
+            if (!userPassword.equals(hashedPassword)) {
+                session.removeAttribute("trustGameData");
+                response.sendRedirect("jsp/trustgame/login.jsp");
+                return;
+            }
+        }
+
+        data.setUsername(user.getName());
+        data.setUserId(user.getId());
+        data.setUser(user);
+        @SuppressWarnings("unchecked")
+        Map<Integer, String> idSessionMap = (Map<Integer, String>) request.getServletContext()
+                .getAttribute("idSessionMap");
+        if (idSessionMap == null) {
+            idSessionMap = new HashMap<>();
+            request.getServletContext().setAttribute("idSessionMap", idSessionMap);
+        }
+        idSessionMap.put(user.getId(), request.getSession().getId());
+        List<GameuserRecord> gameUserRecords = SqlUtils.readGameUsersFromUserId(data, user.getId());
+        if (gameUserRecords.size() == 0) {
             session.removeAttribute("trustGameData");
-            response.sendRedirect("jsp/trustgame/login.jsp");
+            response.sendRedirect("jsp/trustgame/nogame.jsp");
+        } else if (gameUserRecords.size() == 1) {
+            Integer gameUserId = gameUserRecords.get(0).getId();
+            data.setGameUserId(gameUserId);
+            data.setGameUser(gameUserRecords.get(0));
+            SqlUtils.loadAttributes(session, gameUserId);
+            response.sendRedirect("jsp/trustgame/round.jsp");
+        } else {
+            response.sendRedirect("jsp/trustgame/selectgame.jsp");
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        if (request.getParameter("usercode") != null) {
+            doPost(request, response);
+            return;
+        }
+        
         response.sendRedirect("jsp/trustgame/login.jsp");
     }
 

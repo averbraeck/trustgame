@@ -344,41 +344,14 @@ public class RoundServlet extends HttpServlet {
         StringBuilder s = new StringBuilder();
         s.append("            <div class=\"tg-menu-score\">\n");
         s.append("              <div class=\"tg-menu-score-header\">Current score</div>\n");
-        s.append("              <div class=\"tg-menu-score-row\">\n");
-        s.append("                <div class=\"tg-menu-score-leftcol\"></div>");
-        s.append("                <div class=\"tg-menu-max-score\">");
-        s.append(2 * data.getOrganization().getTargetprofit());
-        s.append("                </div>\n");
-        s.append("                <div class=\"tg-menu-max-score\">");
-        s.append(2 * data.getOrganization().getTargetsatisfaction());
-        s.append("                </div>\n");
-        s.append("                <div class=\"tg-menu-max-score\">");
-        s.append(2 * data.getOrganization().getTargetsustainability());
-        s.append("                </div>\n");
-        s.append("              </div>\n");
 
-        s.append("              <div class=\"tg-menu-score-dashline\"></div>\n");
-        s.append("              <div class=\"tg-menu-middle-row\">\n");
-        s.append("                <div class=\"tg-menu-score-leftcol tg-menu-goal-text\">Goal</div>");
-        s.append("                <div class=\"tg-menu-goal-score\">");
-        s.append(data.getOrganization().getTargetprofit());
-        s.append("                </div>\n");
-        s.append("                <div class=\"tg-menu-goal-score\">");
-        s.append(data.getOrganization().getTargetsatisfaction());
-        s.append("                </div>\n");
-        s.append("                <div class=\"tg-menu-goal-score\">");
-        s.append(data.getOrganization().getTargetsustainability());
-        s.append("                </div>\n");
-        s.append("              </div>\n");
-
-        s.append("              <div class=\"tg-menu-score-bars\">\n");
-        s.append("                <div class=\"tg-menu-score-leftcol\"></div>");
+        s.append("              <div class=\"tg-menu-score-body\">\n");
 
         // profit
-        s.append("                <div class=\"tg-menu-score-progress\">\n");
+        s.append("                <div class=\"tg-menu-score-col\">\n");
         s.append("                  <div class=\"tg-menu-score-progress-bar\">\n");
         s.append("                    <div class=\"tg-menu-score-progress-bar-bottom\" style=\"height:");
-        int score = 50 * data.getGameUser().getScoreprofit() / data.getOrganization().getTargetprofit();
+        int score = 100 * data.getGameUser().getScoreprofit() / data.getOrganization().getMaxprofit();
         score = Math.max(0, Math.min(100, score));
         s.append(score + "%");
         if (data.getGameUser().getScoreprofit() < data.getOrganization().getTargetprofit())
@@ -386,15 +359,33 @@ public class RoundServlet extends HttpServlet {
         s.append(";\"><p>");
         s.append(data.getGameUser().getScoreprofit());
         s.append("</p></div>\n");
-        s.append("                    <div class=\"tg-menu-score-progress-bar-top\"></div>\n");
-        s.append("                  </div>\n");
-        s.append("                </div>\n");
+        s.append("                  </div>\n"); // menu-score-progress-bar
+        s.append("                  <div class=\"tg-menu-max-score\">");
+        s.append(data.getOrganization().getMaxprofit());
+        s.append("</div>\n");
+        s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
+        // vh runs from 70 .. 0
+        double vh = 70.0
+                - Math.round(700.0 * data.getOrganization().getTargetprofit() / data.getOrganization().getMaxprofit())
+                        / 10.0;
+        // px runs from -122 .. 155
+        int px = -122 + (int) Math
+                .round(277.0 * data.getOrganization().getTargetprofit() / data.getOrganization().getMaxprofit());
+        String glpx = "calc(" + vh + "vh + " + px + "px);";
+        String ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
+        String gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
+        s.append("                  <div class=\"tg-menu-goal-text\" style=\"top:" + ggpx + "\">Goal</div>\n");
+        s.append("                  <div class=\"tg-menu-goal-score\" style=\"top:" + gspx + "\">");
+        s.append(data.getOrganization().getTargetprofit());
+        s.append("</div>\n");
+        s.append("                  <div class=\"tg-menu-score-dashline\" style=\"top:" + glpx + "\"></div>\n");
+        s.append("                </div>\n"); // menu-score-col
 
         // satisfaction
-        s.append("                <div class=\"tg-menu-score-progress\">\n");
+        s.append("                <div class=\"tg-menu-score-col\">\n");
         s.append("                  <div class=\"tg-menu-score-progress-bar\">\n");
         s.append("                    <div class=\"tg-menu-score-progress-bar-bottom\" style=\"height:");
-        score = 50 * data.getGameUser().getScoresatisfaction() / data.getOrganization().getTargetsatisfaction();
+        score = 100 * data.getGameUser().getScoresatisfaction() / data.getOrganization().getMaxsatisfaction();
         score = Math.max(0, Math.min(100, score));
         s.append(score + "%");
         if (data.getGameUser().getScoresatisfaction() < data.getOrganization().getTargetsatisfaction())
@@ -402,15 +393,31 @@ public class RoundServlet extends HttpServlet {
         s.append(";\"><p>");
         s.append(data.getGameUser().getScoresatisfaction());
         s.append("</p></div>\n");
-        s.append("                    <div class=\"tg-menu-score-progress-bar-top\"></div>\n");
-        s.append("                  </div>\n");
-        s.append("                </div>\n");
+        s.append("                  </div>\n"); // menu-score-progress-bar
+        s.append("                  <div class=\"tg-menu-max-score\">");
+        s.append(data.getOrganization().getMaxsatisfaction());
+        s.append("</div>\n");
+        s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
+        vh = 70.0 - (int) Math.round(
+                700.0 * data.getOrganization().getTargetsatisfaction() / data.getOrganization().getMaxsatisfaction())
+                / 10.0;
+        px = -122 + (int) Math.round(
+                277.0 * data.getOrganization().getTargetsatisfaction() / data.getOrganization().getMaxsatisfaction());
+        glpx = "calc(" + vh + "vh + " + px + "px);";
+        ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
+        gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
+        s.append("                  <div class=\"tg-menu-goal-text\" style=\"top:" + ggpx + "\">Goal</div>\n");
+        s.append("                  <div class=\"tg-menu-goal-score\" style=\"top:" + gspx + "\">");
+        s.append(data.getOrganization().getTargetsatisfaction());
+        s.append("</div>\n");
+        s.append("                  <div class=\"tg-menu-score-dashline\" style=\"top:" + glpx + "\"></div>\n");
+        s.append("                </div>\n"); // menu-score-col
 
         // sustainability
-        s.append("                <div class=\"tg-menu-score-progress\">\n");
+        s.append("                <div class=\"tg-menu-score-col\">\n");
         s.append("                  <div class=\"tg-menu-score-progress-bar\">\n");
         s.append("                    <div class=\"tg-menu-score-progress-bar-bottom\" style=\"height:");
-        score = 50 * data.getGameUser().getScoresustainability() / data.getOrganization().getTargetsustainability();
+        score = 100 * data.getGameUser().getScoresustainability() / data.getOrganization().getMaxsustainability();
         score = Math.max(0, Math.min(100, score));
         s.append(score + "%");
         if (data.getGameUser().getScoresustainability() < data.getOrganization().getTargetsustainability())
@@ -418,13 +425,28 @@ public class RoundServlet extends HttpServlet {
         s.append(";\"><p>");
         s.append(data.getGameUser().getScoresustainability());
         s.append("</p></div>\n");
-        s.append("                    <div class=\"tg-menu-score-progress-bar-top\"></div>\n");
-        s.append("                  </div>\n");
-        s.append("                </div>\n");
-        s.append("              </div>\n");
+        s.append("                  </div>\n"); // menu-score-progress-bar
+        s.append("                  <div class=\"tg-menu-max-score\">");
+        s.append(data.getOrganization().getMaxsustainability());
+        s.append("</div>\n");
+        s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
+        vh = 70.0 - (int) Math.round(700.0 * data.getOrganization().getTargetsustainability()
+                / data.getOrganization().getMaxsustainability()) / 10.0;
+        px = -122 + (int) Math.round(277.0 * data.getOrganization().getTargetsustainability()
+                / data.getOrganization().getMaxsustainability());
+        glpx = "calc(" + vh + "vh + " + px + "px);";
+        ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
+        gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
+        s.append("                  <div class=\"tg-menu-goal-text\" style=\"top:" + ggpx + "\">Goal</div>\n");
+        s.append("                  <div class=\"tg-menu-goal-score\" style=\"top:" + gspx + "\">");
+        s.append(data.getOrganization().getTargetsustainability());
+        s.append("</div>\n");
+        s.append("                  <div class=\"tg-menu-score-dashline\" style=\"top:" + glpx + "\"></div>\n");
+        s.append("                </div>\n"); // menu-score-col
 
-        s.append("              <div class=\"tg-menu-score-row\">\n");
-        s.append("                <div class=\"tg-menu-score-leftcol\"></div>");
+        s.append("              </div>\n"); // menu-score-body
+
+        s.append("              <div class=\"tg-menu-score-footer\">\n");
         s.append("                <div class=\"tg-menu-score-progress-icon\">");
         s.append("<img src=\"images/euro.png\" width=\"24\" height=\"24\" />");
         s.append("                </div>\n");
@@ -434,9 +456,9 @@ public class RoundServlet extends HttpServlet {
         s.append("                <div class=\"tg-menu-score-progress-icon\">");
         s.append("<img src=\"images/leaf.png\" width=\"24\" height=\"24\" />");
         s.append("                </div>\n");
-        s.append("              </div>\n");
+        s.append("              </div>\n"); // menu-score-footer
 
-        s.append("            </div>\n");
+        s.append("            </div>\n"); // menu-score
         return s.toString();
     }
 
@@ -784,19 +806,19 @@ public class RoundServlet extends HttpServlet {
             // col2
             s.append("    <div class=\"tg-carrier-report-col2\">\n");
             s.append("      <div class=\"tg-carrier-report-header\">Services</div>\n");
-            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
-                    + carrier.getId() + "&image=1" + "\" /></div>\n");
-            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
-                    + carrier.getId() + "&image=2" + "\" /></div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id=" + carrier.getId()
+                    + "&image=1" + "\" /></div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id=" + carrier.getId()
+                    + "&image=2" + "\" /></div>\n");
             s.append("    </div>\n"); // carrier-report-col2
 
             // col3
             s.append("    <div class=\"tg-carrier-report-col3\">\n");
             s.append("      <div class=\"tg-carrier-report-header\">Technical details</div>\n");
-            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
-                    + carrier.getId() + "&image=3" + "\" /></div>\n");
-            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id="
-                    + carrier.getId() + "&image=4" + "\" /></div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id=" + carrier.getId()
+                    + "&image=3" + "\" /></div>\n");
+            s.append("      <div class=\"tg-carrier-fb-graph\"><img src=\"/trustgame/imageFB?id=" + carrier.getId()
+                    + "&image=4" + "\" /></div>\n");
             s.append("    </div>\n"); // carrier-report-col3
 
             s.append("  </div>\n"); // carrier-report-columns
@@ -1145,6 +1167,11 @@ public class RoundServlet extends HttpServlet {
             s.append("</td></tr>\n");
         }
 
+        List<UsercarrierRecord> boughtReports = SqlUtils.readUserCarrierRecords(data);
+        s.append("           <tr><td>Reports</td><td>");
+        s.append(-5 * boughtReports.size());
+        s.append("</td><td>-</td><td>-</td></tr>\n");
+        
         s.append("           <tr><td>Total</td><td>");
         s.append(data.getGameUser().getScoreprofit());
         s.append("</td><td>");

@@ -111,6 +111,11 @@ public final class SqlUtils {
         return dslContext.selectFrom(Tables.USER).where(Tables.USER.USERNAME.eq(username)).fetchAny();
     }
 
+    public static UserRecord readUserFromUserCode(final TrustGameData data, final String userCode) {
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        return dslContext.selectFrom(Tables.USER).where(Tables.USER.USERCODE.eq(userCode)).fetchAny();
+    }
+
     public static List<GameuserRecord> readGameUsersFromUser(final TrustGameData data, final UserRecord user) {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         List<GameuserRecord> gameUserRecords = dslContext.selectFrom(Gameuser.GAMEUSER)
@@ -178,6 +183,13 @@ public final class SqlUtils {
         UsercarrierRecord userCarrier = dslContext.selectFrom(Tables.USERCARRIER).where(Tables.USERCARRIER.CARRIER_ID
                 .eq(carrierId).and(Tables.USERCARRIER.GAMEUSER_ID.eq(data.getGameUserId()))).fetchAny();
         return userCarrier;
+    }
+
+    public static List<UsercarrierRecord> readUserCarrierRecords(final TrustGameData data) {
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        List<UsercarrierRecord> userCarrierRecords = dslContext.selectFrom(Tables.USERCARRIER)
+                .where(Tables.USERCARRIER.GAMEUSER_ID.eq(data.getGameUserId())).fetch();
+        return userCarrierRecords;
     }
 
     public static FbreportRecord readFBReportForCarrierId(final TrustGameData data, final int carrierId) {

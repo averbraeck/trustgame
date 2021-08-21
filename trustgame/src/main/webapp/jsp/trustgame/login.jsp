@@ -170,13 +170,22 @@ html, body {
          <table>
            <tr>
              <td width="60px">&nbsp;</td>
-             <td>UserName &nbsp; </td>
+             <td>User name &nbsp; </td>
              <td><input type="text" name="username" /></td>
            </tr>
            <tr>
              <td width="150px">&nbsp;</td>
              <td>Password &nbsp; </td>
              <td><input type="password" name="password" /></td>
+           </tr>
+           <tr>
+             <td width="150px">&nbsp;</td>
+             <td colspan="2"><br><i>Or use your 5-character code:</i></td>
+           </tr>
+           <tr>
+             <td width="150px">&nbsp;</td>
+             <td>Login code&nbsp; </td>
+             <td><input type="text" name="usercode" /></td>
            </tr>
          </table>
          <br/>
