@@ -124,7 +124,7 @@ public class TrustGameData {
 
     /**
      * the static Order records as a list PER round number.<br>
-     * Maa from roundNumber to Order record; there is a list of orders per rpound. <br>
+     * Maa from roundNumber to Order record; there is a list of orders per round. <br>
      * this has the order information in it.<br>
      * filled by the SqlUtils.loadAttributes method.<br>
      * used by: server.
@@ -246,13 +246,16 @@ public class TrustGameData {
     public static final String dayButtonStartInactive = 
             "<div class=\"tg-button-large tg-content-menu-button-inactive\">Start of day</div>";
     public static final String dayButtonFinishDay = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinishDay()\">FinishDay</div>";
+            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinishDay()\">Finish Day</div>";
     public static final String dayButtonFinishDayInactive = 
-            "<div class=\"tg-button-large tg-content-menu-button-inactive\">FinishDay</div>";
+            "<div class=\"tg-button-large tg-content-menu-button-inactive\">Finish Day</div>";
     public static final String dayButtonNextDay = 
             "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickNextDay()\">Go to next day</div>";
-    public static final String dayButtonDebrief = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\">Debriefing screen</div>";
+    public static final String dayButtonScoreOverview = 
+            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>";
+    public static final String dayButtonScoreDebrief = 
+            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>\n"
+            + "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\">Debrief</div>";
     private String dayButton = dayButtonStartInactive;
 
     /* ******************* */

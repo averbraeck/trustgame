@@ -138,6 +138,18 @@ function clickDebrief() {
   document.getElementById("clickForm").submit();
 }
 
+/* click to go to the final scores screen */
+function clickFinalScores() {
+  document.getElementById("click").setAttribute("value", "finalScores");
+  document.getElementById("clickForm").submit();
+}
+
+/* click to get help / briefing screen */
+function clickHelp() {
+  document.getElementById("click").setAttribute("value", "briefing");
+  document.getElementById("clickForm").submit();
+}
+
 
 /* Make the modal wiindow div element draggable: */
 function dragElement(elmnt) {

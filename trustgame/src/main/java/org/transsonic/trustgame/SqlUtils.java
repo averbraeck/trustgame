@@ -14,6 +14,7 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.transsonic.trustgame.data.trustgame.Tables;
 import org.transsonic.trustgame.data.trustgame.tables.Gameuser;
+import org.transsonic.trustgame.data.trustgame.tables.records.BriefingRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.CarrierRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.CarrierreviewRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.ClientRecord;
@@ -138,6 +139,11 @@ public final class SqlUtils {
     public static CarrierRecord readCarrierFromCarrierId(final TrustGameData data, final Integer carrierId) {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         return dslContext.selectFrom(Tables.CARRIER).where(Tables.CARRIER.ID.eq(carrierId)).fetchAny();
+    }
+
+    public static BriefingRecord readBriefingFromBriefingId(final TrustGameData data, final Integer briefingId) {
+        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
+        return dslContext.selectFrom(Tables.BRIEFING).where(Tables.BRIEFING.ID.eq(briefingId)).fetchAny();
     }
 
     public static List<ReviewRecord> getReviews(final TrustGameData data, final int carrierId, final int roundNumber) {
@@ -286,8 +292,12 @@ public final class SqlUtils {
         data.setShowModalWindow(0);
 
         // Initialize the left and right pane of the screen
+        // show briefing screen if no orders have been confirmed yet
         RoundServlet.handleOrganizationScoresOrders(data);
-        RoundServlet.handleOrderContent(data);
+        if (SessionUtils.getConfirmedOrderListUpToRound(data, 1).size() == 0)
+            RoundServlet.handleBriefing(data);
+        else
+            RoundServlet.handleOrderContent(data);
         RoundServlet.handleMessages(data);
     }
 
@@ -333,7 +343,10 @@ public final class SqlUtils {
         // System.out.println("\nSELECTEDCARRIERMAP:\n" + selectedCarrierMap);
 
         if (isGameFinished(data)) {
-            data.setDayButton(TrustGameData.dayButtonDebrief);
+            if (data.getGamePlay().getDebriefingId() == null || data.getGamePlay().getDebriefingId().intValue() == 0)
+                data.setDayButton(TrustGameData.dayButtonScoreOverview);
+            else
+                data.setDayButton(TrustGameData.dayButtonScoreDebrief);
         } else {
             switch (data.getGameUser().getRoundstatus()) {
             case 1:

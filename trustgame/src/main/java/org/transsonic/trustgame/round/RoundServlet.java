@@ -22,6 +22,7 @@ import org.transsonic.trustgame.SessionUtils;
 import org.transsonic.trustgame.SqlUtils;
 import org.transsonic.trustgame.TrustGameData;
 import org.transsonic.trustgame.data.trustgame.Tables;
+import org.transsonic.trustgame.data.trustgame.tables.records.BriefingRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.CarrierRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.CarrierreviewRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.ClientRecord;
@@ -54,7 +55,12 @@ public class RoundServlet extends HttpServlet {
         }
 
         String click = request.getParameter("click").toString();
-        if ("organization".equals(click)) {
+        
+        if ("briefing".equals(click)) {
+            handleBriefing(data);
+            LoggingUtils.insertClick(data, "Organization");
+
+        } else if ("organization".equals(click)) {
             data.setMenuChoice(1);
             LoggingUtils.insertClick(data, "Organization");
 
@@ -279,9 +285,14 @@ public class RoundServlet extends HttpServlet {
             data.setShowModalWindow(1);
             LoggingUtils.insertClickOrder(data, "ViewTransportOutcome", clickedOrderId);
 
+        } else if ("finalScores".equals(click)) {
+            handleFinalScores(data);
+            data.setMenuChoice(2);
+            LoggingUtils.insertClick(data, "FinalScores");
+
         } else if ("debrief".equals(click)) {
             handleDebrief(data);
-            data.setMenuChoice(2);
+            data.setMenuChoice(1);
             LoggingUtils.insertClick(data, "Debrief");
 
         } else {
@@ -677,7 +688,7 @@ public class RoundServlet extends HttpServlet {
         data.setContentHtml(s.toString());
     }
 
-    private CarrierRecord handleCarrierDetails(TrustGameData data, int clickedCarrierId) {
+    private static CarrierRecord handleCarrierDetails(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
         StringBuffer s = new StringBuffer();
         s.append("\n<div class=\"tg-carrier-details\">\n");
@@ -691,7 +702,7 @@ public class RoundServlet extends HttpServlet {
         return carrier;
     }
 
-    private CarrierRecord handleCarrierWebsite(TrustGameData data, int clickedCarrierId) {
+    private static CarrierRecord handleCarrierWebsite(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
         StringBuffer s = new StringBuffer();
         s.append("\n<div class=\"tg-carrier-website\">\n");
@@ -710,7 +721,7 @@ public class RoundServlet extends HttpServlet {
         return carrier;
     }
 
-    private CarrierRecord handleCarrierGoogle(TrustGameData data, int clickedCarrierId) {
+    private static CarrierRecord handleCarrierGoogle(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
         StringBuffer s = new StringBuffer();
         s.append("\n<div class=\"tg-carrier-website\">\n");
@@ -729,7 +740,7 @@ public class RoundServlet extends HttpServlet {
         return carrier;
     }
 
-    private CarrierRecord handleCarrierReviews(TrustGameData data, int clickedCarrierId) {
+    private static CarrierRecord handleCarrierReviews(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
         StringBuffer s = new StringBuffer();
         s.append("\n<div class=\"tg-carrier-reviews\">\n");
@@ -757,7 +768,7 @@ public class RoundServlet extends HttpServlet {
         return carrier;
     }
 
-    private CarrierRecord handleCarrierReport(TrustGameData data, int clickedCarrierId) {
+    private static CarrierRecord handleCarrierReport(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
         UsercarrierRecord userCarrier = SqlUtils.readUserCarrierForCarrierId(data, clickedCarrierId);
         StringBuffer s = new StringBuffer();
@@ -845,7 +856,7 @@ public class RoundServlet extends HttpServlet {
         return carrier;
     }
 
-    private CarrierRecord buyCarrierReport(TrustGameData data, int clickedCarrierId) {
+    private static CarrierRecord buyCarrierReport(TrustGameData data, int clickedCarrierId) {
         // update score
         data.getGameUser().setScoreprofit(data.getGameUser().getScoreprofit() - 5);
         SqlUtils.updateGameUser(data, data.getGameUser());
@@ -860,7 +871,7 @@ public class RoundServlet extends HttpServlet {
         return handleCarrierReport(data, clickedCarrierId);
     }
 
-    private String carrierDetailsMenu(int clickedCarrierId) {
+    private static String carrierDetailsMenu(int clickedCarrierId) {
         StringBuffer s = new StringBuffer();
         s.append("  <div class=\"tg-carrier-details-buttons\">\n");
         s.append("    <div class=\"tg-button-small tg-carrier-details-button\" onclick=\"clickCarrierDetails(");
@@ -882,7 +893,7 @@ public class RoundServlet extends HttpServlet {
         return s.toString();
     }
 
-    private String carrierDetailsHeader(TrustGameData data, CarrierRecord carrier) {
+    private static String carrierDetailsHeader(TrustGameData data, CarrierRecord carrier) {
         StringBuffer s = new StringBuffer();
         s.append("  <div class=\"tg-carrier-details-row\">\n");
         s.append("    <div class=\"tg-carrier-details-icon\"><img src=\"/trustgame/imageCarrier?id=" + carrier.getId()
@@ -984,7 +995,7 @@ public class RoundServlet extends HttpServlet {
         data.setMessagesHtml(s.toString());
     }
 
-    private String makeModalWindow(String title, String content, String onClickClose) {
+    private static String makeModalWindow(String title, String content, String onClickClose) {
         StringBuffer s = new StringBuffer();
         s.append("    <div class=\"tg-modal\">\n");
         s.append("      <div class=\"tg-modal-window\" id=\"tg-modal-window\">\n");
@@ -1006,7 +1017,7 @@ public class RoundServlet extends HttpServlet {
         return s.toString();
     }
 
-    private String acceptQuoteModalWindow(TrustGameData data, OrderRecord order, OrdercarrierRecord orderCarrier,
+    private static String acceptQuoteModalWindow(TrustGameData data, OrderRecord order, OrdercarrierRecord orderCarrier,
             CarrierRecord carrier) {
         StringBuilder s = new StringBuilder();
         s.append("        <div class=\"tg-modal-body\">");
@@ -1029,7 +1040,7 @@ public class RoundServlet extends HttpServlet {
         return makeModalWindow("Accept Quote", s.toString(), "clickAcceptQuoteNo()");
     }
 
-    private String makeOkModalWindow(String title, String htmlText) {
+    private static String makeOkModalWindow(String title, String htmlText) {
         StringBuffer s = new StringBuffer();
         s.append("        <div class=\"tg-modal-body\">");
         s.append("          <div class=\"tg-modal-text\">\n");
@@ -1043,7 +1054,7 @@ public class RoundServlet extends HttpServlet {
         return makeModalWindow(title, s.toString(), "clickModalWindowOk()");
     }
 
-    private String makeTransportOutcome(TrustGameData data, int orderId) {
+    private static String makeTransportOutcome(TrustGameData data, int orderId) {
         StringBuffer s = new StringBuffer();
         OrderRecord order = SessionUtils.getOrderRecord(data, orderId);
         SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
@@ -1068,7 +1079,7 @@ public class RoundServlet extends HttpServlet {
         return makeOkModalWindow(title, s.toString());
     }
 
-    private void handleReviewStars(TrustGameData data, int orderId, int nrStars) {
+    private static void handleReviewStars(TrustGameData data, int orderId, int nrStars) {
         OrderRecord order = SessionUtils.getOrderRecord(data, orderId);
         SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
         OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data, selectedCarrier.getOrdercarrierId());
@@ -1119,13 +1130,13 @@ public class RoundServlet extends HttpServlet {
         data.setShowModalWindow(1);
     }
 
-    private void handleDebrief(TrustGameData data) {
+    private static void handleFinalScores(TrustGameData data) {
         StringBuffer s = new StringBuffer();
-        s.append("\n<div class=\"tg-debrief\">\n");
-        s.append("  <div class=\"tg-debrief-header\">Debriefing screen</div>\n");
-        s.append("  <div class=\"tg-debrief-hr\"></div>\n");
-        s.append("  <div class=\"tg-debrief-container\">\n");
-        s.append("    <div class=\"tg-debrief-round-table\">\n");
+        s.append("\n<div class=\"tg-final-score\">\n");
+        s.append("  <div class=\"tg-final-score-header\">Final Scores</div>\n");
+        s.append("  <div class=\"tg-final-score-hr\"></div>\n");
+        s.append("  <div class=\"tg-final-score-container\">\n");
+        s.append("    <div class=\"tg-final-score-round-table\">\n");
         s.append("      <table>\n");
         s.append(
                 "        <thead><tr><td>Round</td><td>Profit</td><td>Satisfaction</td><td>Sustainability</td></tr></thead>\n");
@@ -1160,7 +1171,7 @@ public class RoundServlet extends HttpServlet {
             s.append("           <tr><td>");
             s.append(round);
             if (data.getRoundMapByRoundId().get(round).getTestround() != 0)
-                s.append (" (Practice)");
+                s.append(" (Practice)");
             s.append("</td><td>");
             int sprof = 0;
             int ssat = 0;
@@ -1212,9 +1223,9 @@ public class RoundServlet extends HttpServlet {
 
         s.append("        </tbody>\n");
         s.append("      </table>\n");
-        s.append("    </div>\n"); // debrief-round-table
+        s.append("    </div>\n"); // final-score-round-table
 
-        s.append("    <div class=\"tg-debrief-carrier-table\">\n");
+        s.append("    <div class=\"tg-final-score-carrier-table\">\n");
         s.append("      <table>\n");
         s.append("        <thead><tr><td>Carrier</td><td>Times used</td><td>Your stars</td><td>FB stars</td>");
         s.append("<td>Profit</td><td>Satisfaction</td><td>Sustainability</td></tr></thead>\n");
@@ -1241,14 +1252,14 @@ public class RoundServlet extends HttpServlet {
 
         s.append("        </tbody>\n");
         s.append("      </table>\n");
-        s.append("    </div>\n"); // debrief-carrier-table
+        s.append("    </div>\n"); // final-score-carrier-table
 
-        s.append("  </div>\n"); // debrief-container
-        s.append("</div>\n"); // debrief
+        s.append("  </div>\n"); // final-score-container
+        s.append("</div>\n"); // final-score
         data.setContentHtml(s.toString());
     }
 
-    class CarrierDebriefRecord {
+    static class CarrierDebriefRecord {
         public int id;
         public String name;
         public int profit;
@@ -1258,4 +1269,47 @@ public class RoundServlet extends HttpServlet {
         public double sumUserStars;
         public int timesUsed;
     }
+
+    private static void handleDebrief(TrustGameData data) {
+        StringBuffer s = new StringBuffer();
+        s.append("\n<div class=\"tg-debrief\">\n");
+        s.append("  <div class=\"tg-debrief-header\">Debriefing information</div>\n");
+        s.append("  <div class=\"tg-debrief-hr\"></div>\n");
+        s.append("  <div class=\"tg-debrief-container\">\n");
+        BriefingRecord debriefing = SqlUtils.readBriefingFromBriefingId(data, data.getGamePlay().getDebriefingId());
+        if (debriefing.getBriefingimage() != null) {
+            s.append("    <div class=\"tg-debrief-image\">");
+            s.append("<img src=\"/trustgame/imageBriefing?id=" + debriefing.getId() + "\" />");
+            s.append("    </div>\n");
+        } else if (debriefing.getBriefingtext() != null) {
+            s.append(debriefing.getBriefingtext());
+        } else {
+            s.append("No detailed debriefing information available");
+        }
+        s.append("  </div>\n"); // debrief-container
+        s.append("</div>\n"); // debrief
+        data.setContentHtml(s.toString());
+    }
+
+    public static void handleBriefing(TrustGameData data) {
+        StringBuffer s = new StringBuffer();
+        s.append("\n<div class=\"tg-brief\">\n");
+        s.append("  <div class=\"tg-brief-header\">Briefing information and Platform Support</div>\n");
+        s.append("  <div class=\"tg-brief-hr\"></div>\n");
+        s.append("  <div class=\"tg-brief-container\">\n");
+        BriefingRecord briefing = SqlUtils.readBriefingFromBriefingId(data, data.getGamePlay().getBriefingId());
+        if (briefing.getBriefingimage() != null) {
+            s.append("    <div class=\"tg-brief-image\">");
+            s.append("<img src=\"/trustgame/imageBriefing?id=" + briefing.getId() + "\" />");
+            s.append("    </div>\n");
+        } else if (briefing.getBriefingtext() != null) {
+            s.append(briefing.getBriefingtext());
+        } else {
+            s.append("No detailed briefing information available");
+        }
+        s.append("  </div>\n"); // brief-container
+        s.append("</div>\n"); // brief
+        data.setContentHtml(s.toString());
+    }
+
 }

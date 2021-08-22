@@ -77,7 +77,7 @@
       
       <div class="tg-footer">
         <table><tr>
-          <td width="60px"><div class="tg-help-icon-left"><img src="images/support2.png" /></div></td>
+          <td width="60px"><div class="tg-help-icon-left"><img src="images/support2.png" onclick="clickHelp()" /></div></td>
           <td class="tg-help-col">
             <p><b>Help for the steps to take in each round</b></p>
             <p>STEP 1. Publish transport orders (left menu) and preview carrier quotes</p>

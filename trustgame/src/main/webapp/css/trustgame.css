@@ -1235,16 +1235,16 @@ html, body {
   margin-left: 10px;
 }
 
-/* ================= */
-/* DEBRIEFING SCREEN */
-/* ================= */
+/* ================== */
+/* FINAL SCORE SCREEN */
+/* ================== */
 
-.tg-debrief {
+.tg-final-score {
   flex-direction: column;
   justify-content: flex-start;
 }
 
-.tg-debrief-header {
+.tg-final-score-header {
   display: flex;
   width: 100%;
   align-content: left;
@@ -1254,14 +1254,14 @@ html, body {
   margin-right: 20px;
 }
 
-.tg-debrief-hr {
+.tg-final-score-hr {
   display: flex;
   position: relative;
   width: 100%;
   border: 2px solid orange;
 }
 
-.tg-debrief-container {
+.tg-final-score-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -1271,32 +1271,70 @@ html, body {
   overflow: auto;
 }
 
-.tg-debrief-round-table {
+.tg-final-score-round-table {
   display: flex;
   margin-left: 00px;
   margin-top: 20px;
 }
 
-.tg-debrief-carrier-table {
+.tg-final-score-carrier-table {
   display: flex;
   margin-left: 30px;
   margin-top: 20px;
 }
 
-.tg-debrief-container table {
+.tg-final-score-container table {
   border-collapse: collapse;
   border: 1px solid gray;
 }
 
-.tg-debrief-container table td {
+.tg-final-score-container table td {
   border-collapse: collapse;
   border: 1px solid gray;
   padding: 4px;
   text-align: center;
 }
 
-.tg-debrief-container table > thead td {
+.tg-final-score-container table > thead td {
   font-style: italic;
+}
+
+/* ============================== */
+/* BRIEFING AND DEBRIEFING SCREEN */
+/* ============================== */
+
+.tg-debrief, .tg-brief {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.tg-debrief-header, .tg-brief-header {
+  display: flex;
+  width: 100%;
+  align-content: left;
+  font-size: 1.5em;
+  font-style: normal;
+  color: orange;  
+  margin-right: 20px;
+}
+
+.tg-debrief-hr, .tg-brief-hr {
+  display: flex;
+  position: relative;
+  width: 100%;
+  border: 2px solid orange;
+}
+
+.tg-debrief-container, .tg-brief-container {
+  display: block;
+  margin-top: 20px;
+  max-height: calc(100vh - 310px);
+  max-width: calc(100vw - 500px);
+  overflow: auto;
+}
+
+.tg-debrief-container img, .tg-brief-container img {
+  max-width: 99%;
 }
 
 /* ===================================== */
