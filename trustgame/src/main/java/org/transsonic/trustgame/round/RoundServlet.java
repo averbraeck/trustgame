@@ -55,7 +55,7 @@ public class RoundServlet extends HttpServlet {
         }
 
         String click = request.getParameter("click").toString();
-        
+
         if ("briefing".equals(click)) {
             handleBriefing(data);
             LoggingUtils.insertClick(data, "Organization");
@@ -278,6 +278,11 @@ public class RoundServlet extends HttpServlet {
             data.setModalWindowHtml("");
             data.setShowModalWindow(0);
             LoggingUtils.insertClick(data, "ConfirmStarsOk");
+
+        } else if ("changeReview".equals(click)) {
+            int clickedOrderId = Integer.parseInt(request.getParameter("clickedOrderId"));
+            handleChangeReview(data, clickedOrderId);
+            LoggingUtils.insertClickOrder(data, "changeReview", clickedOrderId);
 
         } else if ("viewTransportOutcome".equals(click)) {
             int clickedOrderId = Integer.parseInt(request.getParameter("clickedOrderId"));
@@ -583,6 +588,7 @@ public class RoundServlet extends HttpServlet {
 
             else {
 
+                SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
                 s.append("                <div class=\"tg-accepted-quote\">\n");
                 s.append("                  <div class=\"tg-accepted-quote-header\">\n");
                 s.append("                    <div class=\"tg-accepted-quote-header-carrier\">Carrier</div>\n");
@@ -602,7 +608,6 @@ public class RoundServlet extends HttpServlet {
                 if (status <= 1)
                     s.append("No carrier quote accepted yet");
                 else {
-                    SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
                     if (selectedCarrier != null) {
                         OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data,
                                 selectedCarrier.getOrdercarrierId());
@@ -619,7 +624,6 @@ public class RoundServlet extends HttpServlet {
                 else if (status == 3) {
                     s.append(scoreReviewStars(order.getId()));
                 } else if (status == 4) {
-                    SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
                     if (selectedCarrier != null) {
                         if (selectedCarrier.getUserscore() != null)
                             s.append(displayReviewStars(selectedCarrier.getUserscore()));
@@ -631,11 +635,25 @@ public class RoundServlet extends HttpServlet {
                 s.append("                    </div>\n");
                 s.append("                  </div>\n");
                 if (status > 2) {
-                    s.append("                  <div class=\"tg-carrier-button-body-row\">");
-                    s.append("                    <div class=\"tg-button-small\" onclick=\"clickViewTransportOutcome(");
+                    s.append("                  <div class=\"tg-carrier-button-body-row\">\n");
+                    s.append("                    <div class=\"tg-carrier-button-body-button\">\n");
+                    s.append(
+                            "                      <div class=\"tg-button-small\" onclick=\"clickViewTransportOutcome(");
                     s.append(order.getId());
                     s.append(")\">");
                     s.append("Transport outcome</div>\n");
+                    s.append("                    </div>\n");
+                    // allow to change entered scores in the current round
+                    if (status == 4 && selectedCarrier != null && selectedCarrier.getUserscore() != null
+                            && (data.getRoundMapByRoundId().get(order.getRoundId().intValue()).getRoundnumber() == data
+                                    .getRoundNumber())) {
+                        s.append("                    <div class=\"tg-carrier-button-body-button\">\n");
+                        s.append("                      <div class=\"tg-button-small\" onclick=\"clickChangeReview(");
+                        s.append(order.getId());
+                        s.append(")\">");
+                        s.append("Change review</div>\n");
+                        s.append("                    </div>\n");
+                    }
                     s.append("                  </div>\n");
                 }
                 s.append("                </div>\n");
@@ -1128,6 +1146,21 @@ public class RoundServlet extends HttpServlet {
         }
         data.setModalWindowHtml(makeOkModalWindow("Thanks for your review!", s.toString()));
         data.setShowModalWindow(1);
+    }
+
+    private static void handleChangeReview(TrustGameData data, int orderId) {
+        OrderRecord order = SessionUtils.getOrderRecord(data, orderId);
+        SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
+        selectedCarrier.setUserscore(null); // remove the score
+        selectedCarrier.store();
+        
+        GameuserRecord gameUser = data.getGameUser();
+        gameUser.setRoundstatus(2); // make sure we cannot finish the day since a score has been changed
+        gameUser.store();
+        data.setDayButton(TrustGameData.dayButtonFinishDayInactive); // make the finish day button inactive
+
+        if (data.getContentChoice() == 1)
+            handleOrderContent(data); // display the order screen
     }
 
     private static void handleFinalScores(TrustGameData data) {

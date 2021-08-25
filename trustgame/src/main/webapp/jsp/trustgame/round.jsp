@@ -54,7 +54,7 @@
           
           <div class="tg-message-box">
             <div class="tg-icon-col-message">
-              <div class="tg-icon" onclick="clickMessage()"><img src="images/message.png" width="48" height="48" /></div>
+              <div class="tg-icon"><img src="images/message.png" width="48" height="48" /></div>
             </div>
             <div class="tg-message-col2" id="tg-message-col2">
               ${trustGameData.getMessagesHtml()}
@@ -66,6 +66,7 @@
         
         <div class="tg-col2">
           <div class="tg-content-menu">
+            <div class="tg-button-large tg-content-menu-button" onclick="clickHelp()">Briefing</div>
             <div class="tg-button-large tg-content-menu-button" onclick="clickPublishedOrders()">Order overview</div>
             <div class="tg-button-large tg-content-menu-button" onclick="clickCarrierOverview()">Carrier overview</div>
             ${trustGameData.getDayButton()}
@@ -77,7 +78,7 @@
       
       <div class="tg-footer">
         <table><tr>
-          <td width="60px"><div class="tg-help-icon-left"><img src="images/support2.png" onclick="clickHelp()" /></div></td>
+          <td width="60px"><div class="tg-help-icon-left"><img src="images/support2.png" /></div></td>
           <td class="tg-help-col">
             <p><b>Help for the steps to take in each round</b></p>
             <p>STEP 1. Publish transport orders (left menu) and preview carrier quotes</p>

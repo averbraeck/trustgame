@@ -238,7 +238,7 @@ public class TrustGameData {
     /**
      * client info (dynamic) for popup.
      */
-    private String modaltWindowHtml = "";
+    private String modalWindowHtml = "";
 
     /**
      * button for next day:active or inactive. Deafult: inactive.
@@ -439,11 +439,11 @@ public class TrustGameData {
     }
 
     public String getModalWindowHtml() {
-        return modaltWindowHtml;
+        return modalWindowHtml;
     }
 
     public void setModalWindowHtml(String modalClientWindowHtml) {
-        this.modaltWindowHtml = modalClientWindowHtml;
+        this.modalWindowHtml = modalClientWindowHtml;
     }
 
     public String getContentHtml() {

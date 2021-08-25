@@ -18,7 +18,7 @@ html, body {
 
 .tg-button-large {
   flex-grow: 0;
-  width: 20%;
+  width: 16%;
   height: 30px;
   background: navy;
   font-size: 1.4em;
@@ -164,7 +164,6 @@ html, body {
   margin-top: 1px;
   margin-bottom: 1px;
   margin-left: 6px;
-  cursor: pointer;
 }
 
 .tg-help-icon-left > img {
@@ -520,17 +519,17 @@ html, body {
 }
 
 .tg-content-menu-button {
-  width: 20%;
+  width: 16%;
 }
 
 .tg-content-menu-button-inactive {
-  width: 20%;
+  width: 16%;
   background-color: gray;
   cursor: default;
 }
 
 .tg-content-menu-button-red {
-  width: 20%;
+  width: 16%;
   background-color: red;
 }
 
@@ -1076,6 +1075,10 @@ html, body {
 .tg-carrier-button-body-row {
   width: 100%;
   display: flex;
+}
+
+.tg-carrier-button-body-button {
+  width: 50%;
 }
 
 .tg-carrier-button-body-row > .tg-button-small {

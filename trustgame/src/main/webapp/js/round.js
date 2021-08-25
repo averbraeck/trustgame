@@ -126,9 +126,16 @@ function clickGiveStars(orderId, numberStars) {
   document.getElementById("clickForm").submit();
 }
 
-/* click to confirm the choice for 1 to 5 stars */
+/* click to confirm the review with 1 to 5 stars */
 function clickConfirmStars() {
   document.getElementById("click").setAttribute("value", "confirmStars");
+  document.getElementById("clickForm").submit();
+}
+
+/* click to change the review choice for 1 to 5 stars */
+function clickChangeReview(orderId) {
+  document.getElementById("click").setAttribute("value", "changeReview");
+  document.getElementById("clickedOrderId").setAttribute("value", String(orderId));
   document.getElementById("clickForm").submit();
 }
 
