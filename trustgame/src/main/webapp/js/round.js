@@ -151,8 +151,14 @@ function clickFinalScores() {
   document.getElementById("clickForm").submit();
 }
 
-/* click to get help / briefing screen */
+/* click to get help screen */
 function clickHelp() {
+  document.getElementById("click").setAttribute("value", "help");
+  document.getElementById("clickForm").submit();
+}
+
+/* click to get briefing screen */
+function clickBriefing() {
   document.getElementById("click").setAttribute("value", "briefing");
   document.getElementById("clickForm").submit();
 }

@@ -164,6 +164,7 @@ html, body {
   margin-top: 1px;
   margin-bottom: 1px;
   margin-left: 6px;
+  cursor: pointer;
 }
 
 .tg-help-icon-left > img {

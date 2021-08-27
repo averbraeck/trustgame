@@ -66,7 +66,7 @@
         
         <div class="tg-col2">
           <div class="tg-content-menu">
-            <div class="tg-button-large tg-content-menu-button" onclick="clickHelp()">Briefing</div>
+            <div class="tg-button-large tg-content-menu-button" onclick="clickBriefing()">Briefing</div>
             <div class="tg-button-large tg-content-menu-button" onclick="clickPublishedOrders()">Order overview</div>
             <div class="tg-button-large tg-content-menu-button" onclick="clickCarrierOverview()">Carrier overview</div>
             ${trustGameData.getDayButton()}
@@ -78,7 +78,7 @@
       
       <div class="tg-footer">
         <table><tr>
-          <td width="60px"><div class="tg-help-icon-left"><img src="images/support2.png" /></div></td>
+          <td width="60px"><div class="tg-help-icon-left" onclick="clickHelp()"><img src="images/support2.png" /></div></td>
           <td class="tg-help-col">
             <p><b>Help for the steps to take in each round</b></p>
             <p>STEP 1. Publish transport orders (left menu) and preview carrier quotes</p>
