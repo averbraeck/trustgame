@@ -58,7 +58,11 @@ public class RoundServlet extends HttpServlet {
 
         if ("briefing".equals(click)) {
             handleBriefing(data);
-            LoggingUtils.insertClick(data, "Organization");
+            LoggingUtils.insertClick(data, "Briefing");
+
+        } else if ("help".equals(click)) {
+            handleHelp(data);
+            LoggingUtils.insertClick(data, "Help");
 
         } else if ("organization".equals(click)) {
             data.setMenuChoice(1);
@@ -1153,7 +1157,7 @@ public class RoundServlet extends HttpServlet {
         SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
         selectedCarrier.setUserscore(null); // remove the score
         selectedCarrier.store();
-        
+
         GameuserRecord gameUser = data.getGameUser();
         gameUser.setRoundstatus(2); // make sure we cannot finish the day since a score has been changed
         gameUser.store();
@@ -1309,13 +1313,17 @@ public class RoundServlet extends HttpServlet {
         s.append("  <div class=\"tg-debrief-header\">Debriefing information</div>\n");
         s.append("  <div class=\"tg-debrief-hr\"></div>\n");
         s.append("  <div class=\"tg-debrief-container\">\n");
-        BriefingRecord debriefing = SqlUtils.readBriefingFromBriefingId(data, data.getGamePlay().getDebriefingId());
-        if (debriefing.getBriefingimage() != null) {
-            s.append("    <div class=\"tg-debrief-image\">");
-            s.append("<img src=\"/trustgame/imageBriefing?id=" + debriefing.getId() + "\" />");
-            s.append("    </div>\n");
-        } else if (debriefing.getBriefingtext() != null) {
-            s.append(debriefing.getBriefingtext());
+        if (data.getGamePlay().getDebriefingId() != null) {
+            BriefingRecord debriefing = SqlUtils.readBriefingFromBriefingId(data, data.getGamePlay().getDebriefingId());
+            if (debriefing.getBriefingimage() != null) {
+                s.append("    <div class=\"tg-debrief-image\">");
+                s.append("<img src=\"/trustgame/imageBriefing?id=" + debriefing.getId() + "\" />");
+                s.append("    </div>\n");
+            } else if (debriefing.getBriefingtext() != null) {
+                s.append(debriefing.getBriefingtext());
+            } else {
+                s.append("No detailed debriefing information available");
+            }
         } else {
             s.append("No detailed debriefing information available");
         }
@@ -1330,15 +1338,44 @@ public class RoundServlet extends HttpServlet {
         s.append("  <div class=\"tg-brief-header\">Briefing information and Platform Support</div>\n");
         s.append("  <div class=\"tg-brief-hr\"></div>\n");
         s.append("  <div class=\"tg-brief-container\">\n");
-        BriefingRecord briefing = SqlUtils.readBriefingFromBriefingId(data, data.getGamePlay().getBriefingId());
-        if (briefing.getBriefingimage() != null) {
-            s.append("    <div class=\"tg-brief-image\">");
-            s.append("<img src=\"/trustgame/imageBriefing?id=" + briefing.getId() + "\" />");
-            s.append("    </div>\n");
-        } else if (briefing.getBriefingtext() != null) {
-            s.append(briefing.getBriefingtext());
+        if (data.getGamePlay().getBriefingId() != null) {
+            BriefingRecord briefing = SqlUtils.readBriefingFromBriefingId(data, data.getGamePlay().getBriefingId());
+            if (briefing.getBriefingimage() != null) {
+                s.append("    <div class=\"tg-brief-image\">");
+                s.append("<img src=\"/trustgame/imageBriefing?id=" + briefing.getId() + "\" />");
+                s.append("    </div>\n");
+            } else if (briefing.getBriefingtext() != null) {
+                s.append(briefing.getBriefingtext());
+            } else {
+                s.append("No detailed briefing information available");
+            }
         } else {
             s.append("No detailed briefing information available");
+        }
+        s.append("  </div>\n"); // brief-container
+        s.append("</div>\n"); // brief
+        data.setContentHtml(s.toString());
+    }
+
+    public static void handleHelp(TrustGameData data) {
+        StringBuffer s = new StringBuffer();
+        s.append("\n<div class=\"tg-brief\">\n");
+        s.append("  <div class=\"tg-brief-header\">Help for using the FreightBooking Platform and Game</div>\n");
+        s.append("  <div class=\"tg-brief-hr\"></div>\n");
+        s.append("  <div class=\"tg-brief-container\">\n");
+        if (data.getGamePlay().getHelpId() != null) {
+            BriefingRecord briefing = SqlUtils.readBriefingFromBriefingId(data, data.getGamePlay().getHelpId());
+            if (briefing.getBriefingimage() != null) {
+                s.append("    <div class=\"tg-brief-image\">");
+                s.append("<img src=\"/trustgame/imageBriefing?id=" + briefing.getId() + "\" />");
+                s.append("    </div>\n");
+            } else if (briefing.getBriefingtext() != null) {
+                s.append(briefing.getBriefingtext());
+            } else {
+                s.append("No detailed help information available");
+            }
+        } else {
+            s.append("No detailed help information available");
         }
         s.append("  </div>\n"); // brief-container
         s.append("</div>\n"); // brief
