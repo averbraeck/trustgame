@@ -57,16 +57,18 @@ public class RoundServlet extends HttpServlet {
         String click = request.getParameter("click").toString();
 
         if ("briefing".equals(click)) {
+            data.setTopMenuChoice(1);
             handleBriefing(data);
             LoggingUtils.insertClick(data, "Briefing");
 
         } else if ("help".equals(click)) {
+            data.setTopMenuChoice(0);
             handleHelp(data);
             LoggingUtils.insertClick(data, "Help");
 
-        } else if ("organization".equals(click)) {
+        } else if ("mission".equals(click)) {
             data.setMenuChoice(1);
-            LoggingUtils.insertClick(data, "Organization");
+            LoggingUtils.insertClick(data, "Mission");
 
         } else if ("scores".equals(click)) {
             data.setMenuChoice(2);
@@ -125,10 +127,12 @@ public class RoundServlet extends HttpServlet {
             handleOrderContent(data);
 
         } else if ("publishedOrders".equals(click)) {
+            data.setTopMenuChoice(2);
             handleOrderContent(data);
             LoggingUtils.insertClick(data, "OrderOverview");
 
         } else if ("carrierOverview".equals(click)) {
+            data.setTopMenuChoice(3);
             handleCarrierOverviewContent(data);
             LoggingUtils.insertClick(data, "CarrierOverview");
 
@@ -295,11 +299,13 @@ public class RoundServlet extends HttpServlet {
             LoggingUtils.insertClickOrder(data, "ViewTransportOutcome", clickedOrderId);
 
         } else if ("finalScores".equals(click)) {
+            data.setTopMenuChoice(4);
             handleFinalScores(data);
             data.setMenuChoice(2);
             LoggingUtils.insertClick(data, "FinalScores");
 
         } else if ("debrief".equals(click)) {
+            data.setTopMenuChoice(5);
             handleDebrief(data);
             data.setMenuChoice(1);
             LoggingUtils.insertClick(data, "Debrief");
@@ -308,22 +314,22 @@ public class RoundServlet extends HttpServlet {
             System.err.println("UNKNOWN CLICK CHOICE: " + click);
         }
 
-        handleOrganizationScoresOrders(data);
+        handleMissionScoresOrders(data);
         handleMessages(data);
 
         response.sendRedirect("jsp/trustgame/round.jsp");
     }
 
-    public static void handleOrganizationScoresOrders(final TrustGameData data) {
+    public static void handleMissionScoresOrders(final TrustGameData data) {
         switch (data.getMenuChoice()) {
-        case 1: { // organization
+        case 1: { // mission
             StringBuilder s = new StringBuilder();
-            s.append("            <div class=\"tg-menu-organization\">\n");
-            s.append("              <div class=\"tg-menu-organization-header\">");
-            s.append(data.getOrganization().getName());
+            s.append("            <div class=\"tg-menu-mission\">\n");
+            s.append("              <div class=\"tg-menu-mission-header\">");
+            s.append(data.getMission().getName());
             s.append("</div><br/>\n");
-            s.append("              <div class=\"tg-menu-organization-body\">\n");
-            s.append(data.getOrganization().getDescription());
+            s.append("              <div class=\"tg-menu-mission-body\">\n");
+            s.append(data.getMission().getDescription());
             s.append("</div>\n");
             s.append("            </div>\n");
             data.setOrgScoresOrdersHtml(s.toString());
@@ -384,32 +390,32 @@ public class RoundServlet extends HttpServlet {
         s.append("                <div class=\"tg-menu-score-col\">\n");
         s.append("                  <div class=\"tg-menu-score-progress-bar\">\n");
         s.append("                    <div class=\"tg-menu-score-progress-bar-bottom\" style=\"height:");
-        int score = 100 * data.getGameUser().getScoreprofit() / data.getOrganization().getMaxprofit();
+        int score = 100 * data.getGameUser().getScoreprofit() / data.getMission().getMaxprofit();
         score = Math.max(0, Math.min(100, score));
         s.append(score + "%");
-        if (data.getGameUser().getScoreprofit() < data.getOrganization().getTargetprofit())
+        if (data.getGameUser().getScoreprofit() < data.getMission().getTargetprofit())
             s.append("; background-color:red");
         s.append(";\"><p>");
         s.append(data.getGameUser().getScoreprofit());
         s.append("</p></div>\n");
         s.append("                  </div>\n"); // menu-score-progress-bar
         s.append("                  <div class=\"tg-menu-max-score\">");
-        s.append(data.getOrganization().getMaxprofit());
+        s.append(data.getMission().getMaxprofit());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
         // vh runs from 70 .. 0
         double vh = 70.0
-                - Math.round(700.0 * data.getOrganization().getTargetprofit() / data.getOrganization().getMaxprofit())
+                - Math.round(700.0 * data.getMission().getTargetprofit() / data.getMission().getMaxprofit())
                         / 10.0;
         // px runs from -122 .. 155
         int px = -122 + (int) Math
-                .round(277.0 * data.getOrganization().getTargetprofit() / data.getOrganization().getMaxprofit());
+                .round(277.0 * data.getMission().getTargetprofit() / data.getMission().getMaxprofit());
         String glpx = "calc(" + vh + "vh + " + px + "px);";
         String ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
         String gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
         s.append("                  <div class=\"tg-menu-goal-text\" style=\"top:" + ggpx + "\">Goal</div>\n");
         s.append("                  <div class=\"tg-menu-goal-score\" style=\"top:" + gspx + "\">");
-        s.append(data.getOrganization().getTargetprofit());
+        s.append(data.getMission().getTargetprofit());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-score-dashline\" style=\"top:" + glpx + "\"></div>\n");
         s.append("                </div>\n"); // menu-score-col
@@ -418,30 +424,30 @@ public class RoundServlet extends HttpServlet {
         s.append("                <div class=\"tg-menu-score-col\">\n");
         s.append("                  <div class=\"tg-menu-score-progress-bar\">\n");
         s.append("                    <div class=\"tg-menu-score-progress-bar-bottom\" style=\"height:");
-        score = 100 * data.getGameUser().getScoresatisfaction() / data.getOrganization().getMaxsatisfaction();
+        score = 100 * data.getGameUser().getScoresatisfaction() / data.getMission().getMaxsatisfaction();
         score = Math.max(0, Math.min(100, score));
         s.append(score + "%");
-        if (data.getGameUser().getScoresatisfaction() < data.getOrganization().getTargetsatisfaction())
+        if (data.getGameUser().getScoresatisfaction() < data.getMission().getTargetsatisfaction())
             s.append("; background-color:red");
         s.append(";\"><p>");
         s.append(data.getGameUser().getScoresatisfaction());
         s.append("</p></div>\n");
         s.append("                  </div>\n"); // menu-score-progress-bar
         s.append("                  <div class=\"tg-menu-max-score\">");
-        s.append(data.getOrganization().getMaxsatisfaction());
+        s.append(data.getMission().getMaxsatisfaction());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
         vh = 70.0 - (int) Math.round(
-                700.0 * data.getOrganization().getTargetsatisfaction() / data.getOrganization().getMaxsatisfaction())
+                700.0 * data.getMission().getTargetsatisfaction() / data.getMission().getMaxsatisfaction())
                 / 10.0;
         px = -122 + (int) Math.round(
-                277.0 * data.getOrganization().getTargetsatisfaction() / data.getOrganization().getMaxsatisfaction());
+                277.0 * data.getMission().getTargetsatisfaction() / data.getMission().getMaxsatisfaction());
         glpx = "calc(" + vh + "vh + " + px + "px);";
         ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
         gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
         s.append("                  <div class=\"tg-menu-goal-text\" style=\"top:" + ggpx + "\">Goal</div>\n");
         s.append("                  <div class=\"tg-menu-goal-score\" style=\"top:" + gspx + "\">");
-        s.append(data.getOrganization().getTargetsatisfaction());
+        s.append(data.getMission().getTargetsatisfaction());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-score-dashline\" style=\"top:" + glpx + "\"></div>\n");
         s.append("                </div>\n"); // menu-score-col
@@ -450,29 +456,29 @@ public class RoundServlet extends HttpServlet {
         s.append("                <div class=\"tg-menu-score-col\">\n");
         s.append("                  <div class=\"tg-menu-score-progress-bar\">\n");
         s.append("                    <div class=\"tg-menu-score-progress-bar-bottom\" style=\"height:");
-        score = 100 * data.getGameUser().getScoresustainability() / data.getOrganization().getMaxsustainability();
+        score = 100 * data.getGameUser().getScoresustainability() / data.getMission().getMaxsustainability();
         score = Math.max(0, Math.min(100, score));
         s.append(score + "%");
-        if (data.getGameUser().getScoresustainability() < data.getOrganization().getTargetsustainability())
+        if (data.getGameUser().getScoresustainability() < data.getMission().getTargetsustainability())
             s.append("; background-color:red");
         s.append(";\"><p>");
         s.append(data.getGameUser().getScoresustainability());
         s.append("</p></div>\n");
         s.append("                  </div>\n"); // menu-score-progress-bar
         s.append("                  <div class=\"tg-menu-max-score\">");
-        s.append(data.getOrganization().getMaxsustainability());
+        s.append(data.getMission().getMaxsustainability());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
-        vh = 70.0 - (int) Math.round(700.0 * data.getOrganization().getTargetsustainability()
-                / data.getOrganization().getMaxsustainability()) / 10.0;
-        px = -122 + (int) Math.round(277.0 * data.getOrganization().getTargetsustainability()
-                / data.getOrganization().getMaxsustainability());
+        vh = 70.0 - (int) Math.round(700.0 * data.getMission().getTargetsustainability()
+                / data.getMission().getMaxsustainability()) / 10.0;
+        px = -122 + (int) Math.round(277.0 * data.getMission().getTargetsustainability()
+                / data.getMission().getMaxsustainability());
         glpx = "calc(" + vh + "vh + " + px + "px);";
         ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
         gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
         s.append("                  <div class=\"tg-menu-goal-text\" style=\"top:" + ggpx + "\">Goal</div>\n");
         s.append("                  <div class=\"tg-menu-goal-score\" style=\"top:" + gspx + "\">");
-        s.append(data.getOrganization().getTargetsustainability());
+        s.append(data.getMission().getTargetsustainability());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-score-dashline\" style=\"top:" + glpx + "\"></div>\n");
         s.append("                </div>\n"); // menu-score-col
@@ -1180,11 +1186,11 @@ public class RoundServlet extends HttpServlet {
         s.append("        <tbody>\n");
 
         s.append("           <tr><td>Start</td><td>");
-        s.append(data.getOrganization().getStartprofit());
+        s.append(data.getMission().getStartprofit());
         s.append("</td><td>");
-        s.append(data.getOrganization().getStartsatisfaction());
+        s.append(data.getMission().getStartsatisfaction());
         s.append("</td><td>");
-        s.append(data.getOrganization().getStartsustainability());
+        s.append(data.getMission().getStartsustainability());
         s.append("</td></tr>\n");
 
         SortedSet<Integer> carrierIds = new TreeSet<>();

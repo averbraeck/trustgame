@@ -8,9 +8,9 @@ function initPage() {
   }
 }
 
-/* click to get organization info */
-function clickOrganization() {
-  document.getElementById("click").setAttribute("value", "organization");
+/* click to get mission info */
+function clickMission() {
+  document.getElementById("click").setAttribute("value", "mission");
   document.getElementById("clickForm").submit();
 }
 

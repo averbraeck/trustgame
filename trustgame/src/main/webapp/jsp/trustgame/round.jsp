@@ -36,9 +36,7 @@
             <!-- menu with icons -->
           
             <div class="tg-icon-col-menu">
-              <div class="tg-icon" onclick="clickOrganization()"><img src="images/person.png" width="48" height="48" /></div>
-              <div class="tg-icon" onclick="clickScores()"><img src="images/trophee.png" width="48" height="48" /></div>
-              <div class="tg-icon" onclick="clickOrders()"><img src="images/email.png" width="48" height="48" /></div>
+              ${trustGameData.getLeftMenuButtons()}
             </div>
 
             <!-- organization, scores, unconfirmed orders -->
@@ -66,10 +64,7 @@
         
         <div class="tg-col2">
           <div class="tg-content-menu">
-            <div class="tg-button-large tg-content-menu-button" onclick="clickBriefing()">Briefing</div>
-            <div class="tg-button-large tg-content-menu-button" onclick="clickPublishedOrders()">Order overview</div>
-            <div class="tg-button-large tg-content-menu-button" onclick="clickCarrierOverview()">Carrier overview</div>
-            ${trustGameData.getDayButton()}
+            ${trustGameData.getTopMenuButtons()}
           </div>
           <div class="tg-bar"></div>
           <div class="tg-content" id="tg-content">${trustGameData.getContentHtml()}</div>

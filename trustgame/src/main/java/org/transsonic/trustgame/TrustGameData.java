@@ -11,7 +11,7 @@ import org.transsonic.trustgame.data.trustgame.tables.records.GameplayRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.GameuserRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.OrderRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.OrdercarrierRecord;
-import org.transsonic.trustgame.data.trustgame.tables.records.PlayerorganizationRecord;
+import org.transsonic.trustgame.data.trustgame.tables.records.MissionRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.RoundRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.SelectedcarrierRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.UserRecord;
@@ -98,13 +98,13 @@ public class TrustGameData {
     private GameRecord game;
 
     /**
-     * the static Playerorganization record for the currently played game.<br>
-     * this record contains the organization info to display for the current game.<br>
+     * the static Mission record for the currently played game.<br>
+     * this record contains the mission info to display for the current game.<br>
      * this record contains the target scores.<br>
      * filled by the SqlUtils.loadAttributes method.<br>
      * used by: server and in servlet.
      */
-    private PlayerorganizationRecord organization;
+    private MissionRecord mission;
 
     /**
      * the static Round records for the currently played game.<br>
@@ -173,7 +173,7 @@ public class TrustGameData {
      * displayed by: servlet.
      */
     private String contentHtml = "";
-    
+
     /**
      * The footer text. Contains the round number, or the indication of a practice round.<br>
      * filled by the application and updated based on the progression of the rounds.<br>
@@ -195,7 +195,7 @@ public class TrustGameData {
 
     /**
      * which menu on the top left has been chosen, to maintain persistence after a POST. <br>
-     * 0 = empty, 1 = organization, 2 = scores, 3 = orders. <br>
+     * 0 = empty, 1 = mission, 2 = scores, 3 = orders. <br>
      * set to 0 by the SqlUtils.loadAttributes method. <br>
      * updated by RoundServlet.
      */
@@ -220,7 +220,7 @@ public class TrustGameData {
     private int carrierId = 0;
 
     /**
-     * html code for the organization, scores or order.
+     * html code for the mission, scores or order.
      */
     private String orgScoresOrdersHtml = "";
 
@@ -243,20 +243,25 @@ public class TrustGameData {
     /**
      * button for next day:active or inactive. Deafult: inactive.
      */
-    public static final String dayButtonStartInactive = 
-            "<div class=\"tg-button-large tg-content-menu-button-inactive\">Start of day</div>";
-    public static final String dayButtonFinishDay = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinishDay()\">Finish Day</div>";
-    public static final String dayButtonFinishDayInactive = 
-            "<div class=\"tg-button-large tg-content-menu-button-inactive\">Finish Day</div>";
-    public static final String dayButtonNextDay = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickNextDay()\">Go to next day</div>";
-    public static final String dayButtonScoreOverview = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>";
-    public static final String dayButtonScoreDebrief = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>\n"
+    public static final String dayButtonStartInactive = "<div class=\"tg-button-large tg-content-menu-button-inactive\">Start of day</div>";
+    public static final String dayButtonFinishDay = "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinishDay()\">Finish Day</div>";
+    public static final String dayButtonFinishDayInactive = "<div class=\"tg-button-large tg-content-menu-button-inactive\">Finish Day</div>";
+    public static final String dayButtonNextDay = "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickNextDay()\">Go to next day</div>";
+    public static final String dayButtonScoreOverview = "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>";
+    public static final String dayButtonScoreOverview4 = 
+            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\" style=\"color:yellow;\">Final Scores</div>";
+    public static final String dayButtonScoreDebrief = "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>\n"
             + "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\">Debrief</div>";
+    public static final String dayButtonScoreDebrief4 = 
+            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\" style=\"color:yellow;\">Final Scores</div>\n"
+            + "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\">Debrief</div>";
+    public static final String dayButtonScoreDebrief5 = 
+            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>\n"
+            + "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\" style=\"color:yellow;\">Debrief</div>";
     private String dayButton = dayButtonStartInactive;
+    
+    /** topMenuChoice = 1=briefing, 2=Orders, 3=Carriers, 4=Scores, 5=Debrief. */ 
+    private int topMenuChoice = 0;
 
     /* ******************* */
     /* GETTERS AND SETTERS */
@@ -342,12 +347,12 @@ public class TrustGameData {
         this.game = game;
     }
 
-    public PlayerorganizationRecord getOrganization() {
-        return organization;
+    public MissionRecord getMission() {
+        return mission;
     }
 
-    public void setOrganization(PlayerorganizationRecord organization) {
-        this.organization = organization;
+    public void setMission(MissionRecord mission) {
+        this.mission = mission;
     }
 
     public SortedMap<Integer, RoundRecord> getRoundMapByRoundNumber() {
@@ -430,6 +435,29 @@ public class TrustGameData {
         this.menuChoice = menuChoice;
     }
 
+    public String getLeftMenuButtons() {
+        StringBuilder s = new StringBuilder();
+        s.append("<div class=\"tg-icon\" onclick=\"clickMission()\"><img src=\"");
+        if (getMenuChoice() == 1)
+            s.append("images/person_selected.png");
+        else
+            s.append("images/person.png");
+        s.append("\" width=\"48\" height=\"48\" /></div>\n");
+        s.append("              <div class=\"tg-icon\" onclick=\"clickScores()\"><img src=\"");
+        if (getMenuChoice() == 2)
+            s.append("images/trophee_selected.png");
+        else
+            s.append("images/trophee.png");
+        s.append("\" width=\"48\" height=\"48\" /></div>\n");
+        s.append("              <div class=\"tg-icon\" onclick=\"clickOrders()\"><img src=\"");
+        if (getMenuChoice() == 3)
+            s.append("images/email_selected.png");
+        else
+            s.append("images/email.png");
+        s.append("\" width=\"48\" height=\"48\" /></div>\n");
+        return s.toString();
+    }
+
     public int getContentChoice() {
         return contentChoice;
     }
@@ -486,8 +514,35 @@ public class TrustGameData {
         this.messagesHtml = messagesHtml;
     }
 
-    public String getDayButton() {
-        return dayButton;
+    public String getTopMenuButtons() {
+        StringBuilder s = new StringBuilder();
+        s.append("<div class=\"tg-button-large tg-content-menu-button\" onclick=\"clickBriefing()\"");
+        if (topMenuChoice == 1)
+            s.append(" style=\" color:yellow;\"");
+        s.append(">Briefing</div>\n");
+        s.append("<div class=\"tg-button-large tg-content-menu-button\" onclick=\"clickPublishedOrders()\"");
+        if (topMenuChoice == 2)
+            s.append(" style=\" color:yellow;\"");
+        s.append(">Order overview</div>\n");
+        s.append("<div class=\"tg-button-large tg-content-menu-button\" onclick=\"clickCarrierOverview()\"");
+        if (topMenuChoice == 3)
+            s.append(" style=\" color:yellow;\"");
+        s.append(">Carrier overview</div>\n");
+        if (dayButton.equals(dayButtonScoreOverview) && topMenuChoice == 4)
+            s.append(dayButtonScoreOverview4);
+        else if (dayButton.equals(dayButtonScoreDebrief) && topMenuChoice == 4)
+            s.append(dayButtonScoreDebrief4);
+        else if (dayButton.equals(dayButtonScoreDebrief) && topMenuChoice == 5)
+            s.append(dayButtonScoreDebrief5);
+        else 
+            s.append(this.dayButton);
+        s.append("\n");
+        return s.toString();
+    }
+
+    /** topMenuChoice = 1=briefing, 2=Orders, 3=Carriers, 4=Scores, 5=Debriefing. */ 
+    public void setTopMenuChoice(int topMenuChoice) {
+        this.topMenuChoice = topMenuChoice;
     }
 
     public void setDayButton(String dayButton) {

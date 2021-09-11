@@ -24,7 +24,7 @@ import org.transsonic.trustgame.data.trustgame.tables.records.GameplayRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.GameuserRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.OrderRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.OrdercarrierRecord;
-import org.transsonic.trustgame.data.trustgame.tables.records.PlayerorganizationRecord;
+import org.transsonic.trustgame.data.trustgame.tables.records.MissionRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.ReviewRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.RoundRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.SelectedcarrierRecord;
@@ -40,7 +40,7 @@ public final class SqlUtils {
         // utility class
     }
 
-    public static PlayerorganizationRecord readPlayerOrganizationFromGameId(final TrustGameData data,
+    public static MissionRecord readPlayerMissionFromGameId(final TrustGameData data,
             final Integer gameId) {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
         GameRecord game = dslContext.selectFrom(Tables.GAME).where(Tables.GAME.ID.eq(gameId)).fetchAny();
@@ -48,15 +48,15 @@ public final class SqlUtils {
             System.err.println("Could not load game");
             return null;
         }
-        return dslContext.selectFrom(Tables.PLAYERORGANIZATION)
-                .where(Tables.PLAYERORGANIZATION.ID.eq(game.getOrganizationId())).fetchAny();
+        return dslContext.selectFrom(Tables.MISSION)
+                .where(Tables.MISSION.ID.eq(game.getMissionId())).fetchAny();
     }
 
-    public static PlayerorganizationRecord readPlayerOrganizationFromGame(final TrustGameData data,
+    public static MissionRecord readPlayerMissionFromGame(final TrustGameData data,
             final GameRecord game) {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.PLAYERORGANIZATION)
-                .where(Tables.PLAYERORGANIZATION.ID.eq(game.getOrganizationId())).fetchAny();
+        return dslContext.selectFrom(Tables.MISSION)
+                .where(Tables.MISSION.ID.eq(game.getMissionId())).fetchAny();
     }
 
     public static GameRecord readGameFromGameId(final TrustGameData data, final Integer gameId) {
@@ -239,8 +239,8 @@ public final class SqlUtils {
         data.setGameId(game.getId());
         data.setGame(game);
 
-        PlayerorganizationRecord organization = SqlUtils.readPlayerOrganizationFromGameId(data, game.getId());
-        data.setOrganization(organization);
+        MissionRecord mission = SqlUtils.readPlayerMissionFromGameId(data, game.getId());
+        data.setMission(mission);
 
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
 
@@ -293,11 +293,14 @@ public final class SqlUtils {
 
         // Initialize the left and right pane of the screen
         // show briefing screen if no orders have been confirmed yet
-        RoundServlet.handleOrganizationScoresOrders(data);
-        if (SessionUtils.getConfirmedOrderListUpToRound(data, 1).size() == 0)
+        RoundServlet.handleMissionScoresOrders(data);
+        if (SessionUtils.getConfirmedOrderListUpToRound(data, 1).size() == 0) {
             RoundServlet.handleBriefing(data);
-        else
+            data.setTopMenuChoice(1);
+        } else {
+            data.setTopMenuChoice(2);
             RoundServlet.handleOrderContent(data);
+        }
         RoundServlet.handleMessages(data);
     }
 
@@ -375,7 +378,7 @@ public final class SqlUtils {
             s.append(" of ");
             s.append(data.getRoundMapByRoundNumber().size());
             s.append(" days");
-            if (data.getRoundMapByRoundId().get(data.getRoundNumber()).getTestround() != 0) {
+            if (data.getRoundMapByRoundNumber().get(data.getRoundNumber()).getTestround() != 0) {
                 s.append(" (practice round)");
             }
         }
