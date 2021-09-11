@@ -231,8 +231,9 @@ public class RoundServlet extends HttpServlet {
             LoggingUtils.insertClick(data, "AcceptQuoteNo");
 
         } else if ("finishDay".equals(click)) {
+            // TODO: Take from Game.TextFinishDay field
             String finishText = "<center>We are now at the end of the day.<br/><br/>"
-                    + "Before we move to the next day, let's check out<br/>the transport outcome of day. "
+                    + "Before we move to the next day, let's check out<br/>the transport outcome of day "
                     + data.getRoundNumber()
                     + "<br/><br/>and<br/><br/>Give a star rating to the carriers for each transported order.<br/>"
                     + "Once that has finished, you can receive orders for the next day.</center>";
@@ -1149,9 +1150,11 @@ public class RoundServlet extends HttpServlet {
         s.append(carrier.getName());
         s.append(".</p>\n");
         if (lastReview) {
+            // TODO: Take from Game.TestAllReviews field
             s.append("<br/><p>Since you have reviewed all transports, you can go to the next day by clicking on the ");
             s.append("<b>Next Day</b> button at the top right of the screen.</p><br/>\n");
         } else {
+            // TODO: Take from Game.TextReview field
             s.append("<br/><p>Please review all transports before you can go to the next day</p><br/>\n");
         }
         data.setModalWindowHtml(makeOkModalWindow("Thanks for your review!", s.toString()));
