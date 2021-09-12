@@ -40,23 +40,11 @@ public final class SqlUtils {
         // utility class
     }
 
-    public static MissionRecord readPlayerMissionFromGameId(final TrustGameData data,
+    public static MissionRecord readMissionFromGameId(final TrustGameData data,
             final Integer gameId) {
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        GameRecord game = dslContext.selectFrom(Tables.GAME).where(Tables.GAME.ID.eq(gameId)).fetchAny();
-        if (game == null) {
-            System.err.println("Could not load game");
-            return null;
-        }
         return dslContext.selectFrom(Tables.MISSION)
-                .where(Tables.MISSION.ID.eq(game.getMissionId())).fetchAny();
-    }
-
-    public static MissionRecord readPlayerMissionFromGame(final TrustGameData data,
-            final GameRecord game) {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.MISSION)
-                .where(Tables.MISSION.ID.eq(game.getMissionId())).fetchAny();
+                .where(Tables.MISSION.GAME_ID.eq(gameId)).fetchAny();
     }
 
     public static GameRecord readGameFromGameId(final TrustGameData data, final Integer gameId) {
@@ -239,7 +227,7 @@ public final class SqlUtils {
         data.setGameId(game.getId());
         data.setGame(game);
 
-        MissionRecord mission = SqlUtils.readPlayerMissionFromGameId(data, game.getId());
+        MissionRecord mission = SqlUtils.readMissionFromGameId(data, game.getId());
         data.setMission(mission);
 
         DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
@@ -286,20 +274,21 @@ public final class SqlUtils {
         readOrInsertUserRoundRecord(data); // will only insert if does not yet exist
         data.setFooterText(makeFooterText(data));
 
-        data.setMenuChoice(1);
         data.setContentChoice(1);
 
         data.setShowModalWindow(0);
 
         // Initialize the left and right pane of the screen
         // show briefing screen if no orders have been confirmed yet
-        RoundServlet.handleMissionScoresOrders(data);
         if (SessionUtils.getConfirmedOrderListUpToRound(data, 1).size() == 0) {
             RoundServlet.handleBriefing(data);
             data.setTopMenuChoice(1);
+            data.setMenuChoice(0);
         } else {
             data.setTopMenuChoice(2);
+            data.setMenuChoice(1);
             RoundServlet.handleOrderContent(data);
+            RoundServlet.handleMissionScoresOrders(data);
         }
         RoundServlet.handleMessages(data);
     }
@@ -346,10 +335,7 @@ public final class SqlUtils {
         // System.out.println("\nSELECTEDCARRIERMAP:\n" + selectedCarrierMap);
 
         if (isGameFinished(data)) {
-            if (data.getGamePlay().getDebriefingId() == null || data.getGamePlay().getDebriefingId().intValue() == 0)
-                data.setDayButton(TrustGameData.dayButtonScoreOverview);
-            else
-                data.setDayButton(TrustGameData.dayButtonScoreDebrief);
+            data.setDayButton(TrustGameData.dayButtonScoreOverview);
         } else {
             switch (data.getGameUser().getRoundstatus()) {
             case 1:

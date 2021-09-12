@@ -304,7 +304,7 @@ html, body {
   cursor: pointer;
 }
 
-.tg-menu-organization, .tg-menu-score, .tg-menu-orders {
+.tg-menu-mission, .tg-menu-score, .tg-menu-orders {
   flex-grow: 1;
   margin: 10px;
 }
@@ -315,14 +315,14 @@ html, body {
   overflow-y: auto;
 }
 
-.tg-menu-organization-header {
+.tg-menu-mission-header {
   font-weight: bold;
   text-align: center;
   font-size: 1.2em;
   color: teal;
 }
 
-.tg-menu-organization-body {
+.tg-menu-mission-body {
   font-style: normal;
   text-align: left;
   font-size: 1em;

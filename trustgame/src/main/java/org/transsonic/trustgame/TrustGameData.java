@@ -250,17 +250,9 @@ public class TrustGameData {
     public static final String dayButtonScoreOverview = "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>";
     public static final String dayButtonScoreOverview4 = 
             "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\" style=\"color:yellow;\">Final Scores</div>";
-    public static final String dayButtonScoreDebrief = "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>\n"
-            + "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\">Debrief</div>";
-    public static final String dayButtonScoreDebrief4 = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\" style=\"color:yellow;\">Final Scores</div>\n"
-            + "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\">Debrief</div>";
-    public static final String dayButtonScoreDebrief5 = 
-            "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickFinalScores()\">Final Scores</div>\n"
-            + "<div class=\"tg-button-large tg-content-menu-button-red\" onClick=\"clickDebrief()\" style=\"color:yellow;\">Debrief</div>";
     private String dayButton = dayButtonStartInactive;
     
-    /** topMenuChoice = 1=briefing, 2=Orders, 3=Carriers, 4=Scores, 5=Debrief. */ 
+    /** topMenuChoice = 1=Briefing, 2=Orders, 3=Carriers, 4=Final Scores. */ 
     private int topMenuChoice = 0;
 
     /* ******************* */
@@ -530,17 +522,13 @@ public class TrustGameData {
         s.append(">Carrier overview</div>\n");
         if (dayButton.equals(dayButtonScoreOverview) && topMenuChoice == 4)
             s.append(dayButtonScoreOverview4);
-        else if (dayButton.equals(dayButtonScoreDebrief) && topMenuChoice == 4)
-            s.append(dayButtonScoreDebrief4);
-        else if (dayButton.equals(dayButtonScoreDebrief) && topMenuChoice == 5)
-            s.append(dayButtonScoreDebrief5);
         else 
             s.append(this.dayButton);
         s.append("\n");
         return s.toString();
     }
 
-    /** topMenuChoice = 1=briefing, 2=Orders, 3=Carriers, 4=Scores, 5=Debriefing. */ 
+    /** topMenuChoice = 1=Briefing, 2=Orders, 3=Carriers, 4=Final Scores. */ 
     public void setTopMenuChoice(int topMenuChoice) {
         this.topMenuChoice = topMenuChoice;
     }

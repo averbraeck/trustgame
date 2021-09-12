@@ -124,6 +124,7 @@ public class RoundServlet extends HttpServlet {
             userOrder.store();
             LoggingUtils.insertClickOrder(data, "PublishOrder", order.getOrdernumber().intValue());
             SqlUtils.updateUserData(session, data);
+            data.setTopMenuChoice(2);
             handleOrderContent(data);
 
         } else if ("publishedOrders".equals(click)) {
@@ -231,12 +232,8 @@ public class RoundServlet extends HttpServlet {
             LoggingUtils.insertClick(data, "AcceptQuoteNo");
 
         } else if ("finishDay".equals(click)) {
-            // TODO: Take from Game.TextFinishDay field
-            String finishText = "<center>We are now at the end of the day.<br/><br/>"
-                    + "Before we move to the next day, let's check out<br/>the transport outcome of day "
-                    + data.getRoundNumber()
-                    + "<br/><br/>and<br/><br/>Give a star rating to the carriers for each transported order.<br/>"
-                    + "Once that has finished, you can receive orders for the next day.</center>";
+            String finishText = data.getGame().getTextfinishday().replaceAll("%r",
+                    String.valueOf(data.getRoundNumber()));
             data.setModalWindowHtml(makeOkModalWindow("Finish transport day " + data.getRoundNumber(), finishText));
             data.setDayButton(TrustGameData.dayButtonFinishDayInactive);
             GameuserRecord gameUser = data.getGameUser();
@@ -304,12 +301,6 @@ public class RoundServlet extends HttpServlet {
             handleFinalScores(data);
             data.setMenuChoice(2);
             LoggingUtils.insertClick(data, "FinalScores");
-
-        } else if ("debrief".equals(click)) {
-            data.setTopMenuChoice(5);
-            handleDebrief(data);
-            data.setMenuChoice(1);
-            LoggingUtils.insertClick(data, "Debrief");
 
         } else {
             System.err.println("UNKNOWN CLICK CHOICE: " + click);
@@ -406,11 +397,10 @@ public class RoundServlet extends HttpServlet {
         s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
         // vh runs from 70 .. 0
         double vh = 70.0
-                - Math.round(700.0 * data.getMission().getTargetprofit() / data.getMission().getMaxprofit())
-                        / 10.0;
+                - Math.round(700.0 * data.getMission().getTargetprofit() / data.getMission().getMaxprofit()) / 10.0;
         // px runs from -122 .. 155
-        int px = -122 + (int) Math
-                .round(277.0 * data.getMission().getTargetprofit() / data.getMission().getMaxprofit());
+        int px = -122
+                + (int) Math.round(277.0 * data.getMission().getTargetprofit() / data.getMission().getMaxprofit());
         String glpx = "calc(" + vh + "vh + " + px + "px);";
         String ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
         String gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
@@ -438,11 +428,11 @@ public class RoundServlet extends HttpServlet {
         s.append(data.getMission().getMaxsatisfaction());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
-        vh = 70.0 - (int) Math.round(
-                700.0 * data.getMission().getTargetsatisfaction() / data.getMission().getMaxsatisfaction())
+        vh = 70.0 - (int) Math
+                .round(700.0 * data.getMission().getTargetsatisfaction() / data.getMission().getMaxsatisfaction())
                 / 10.0;
-        px = -122 + (int) Math.round(
-                277.0 * data.getMission().getTargetsatisfaction() / data.getMission().getMaxsatisfaction());
+        px = -122 + (int) Math
+                .round(277.0 * data.getMission().getTargetsatisfaction() / data.getMission().getMaxsatisfaction());
         glpx = "calc(" + vh + "vh + " + px + "px);";
         ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
         gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
@@ -470,10 +460,11 @@ public class RoundServlet extends HttpServlet {
         s.append(data.getMission().getMaxsustainability());
         s.append("</div>\n");
         s.append("                  <div class=\"tg-menu-min-score\">0</div>\n");
-        vh = 70.0 - (int) Math.round(700.0 * data.getMission().getTargetsustainability()
-                / data.getMission().getMaxsustainability()) / 10.0;
-        px = -122 + (int) Math.round(277.0 * data.getMission().getTargetsustainability()
-                / data.getMission().getMaxsustainability());
+        vh = 70.0 - (int) Math
+                .round(700.0 * data.getMission().getTargetsustainability() / data.getMission().getMaxsustainability())
+                / 10.0;
+        px = -122 + (int) Math
+                .round(277.0 * data.getMission().getTargetsustainability() / data.getMission().getMaxsustainability());
         glpx = "calc(" + vh + "vh + " + px + "px);";
         ggpx = "calc(" + vh + "vh + " + (px + 2) + "px);";
         gspx = "calc(" + vh + "vh + " + (px - 15) + "px);";
@@ -1144,18 +1135,12 @@ public class RoundServlet extends HttpServlet {
 
         // make popup
         StringBuffer s = new StringBuffer();
-        s.append("<p>Thanks for reviewing the transport of order #");
-        s.append(order.getOrdernumber());
-        s.append(" by carrier ");
-        s.append(carrier.getName());
-        s.append(".</p>\n");
         if (lastReview) {
-            // TODO: Take from Game.TestAllReviews field
-            s.append("<br/><p>Since you have reviewed all transports, you can go to the next day by clicking on the ");
-            s.append("<b>Next Day</b> button at the top right of the screen.</p><br/>\n");
+            s.append(data.getGame().getTextallreviews().replaceAll("%r", String.valueOf(data.getRoundNumber()))
+                    .replaceAll("%o", order.getOrdernumber().toString()).replaceAll("%c", carrier.getName()));
         } else {
-            // TODO: Take from Game.TextReview field
-            s.append("<br/><p>Please review all transports before you can go to the next day</p><br/>\n");
+            s.append(data.getGame().getTextreview().replaceAll("%r", String.valueOf(data.getRoundNumber()))
+                    .replaceAll("%o", order.getOrdernumber().toString()).replaceAll("%c", carrier.getName()));
         }
         data.setModalWindowHtml(makeOkModalWindow("Thanks for your review!", s.toString()));
         data.setShowModalWindow(1);
@@ -1213,10 +1198,10 @@ public class RoundServlet extends HttpServlet {
             cdr.fbstars = carrierReview.getOverallstars();
         }
 
-        for (int round = 1; round < data.getRoundNumber(); round++) {
+        for (int round : data.getRoundMapByRoundNumber().keySet()) {
             s.append("           <tr><td>");
             s.append(round);
-            if (data.getRoundMapByRoundId().get(round).getTestround() != 0)
+            if (data.getRoundMapByRoundNumber().get(round).getTestround() != 0)
                 s.append(" (Practice)");
             s.append("</td><td>");
             int sprof = 0;
@@ -1237,17 +1222,17 @@ public class RoundServlet extends HttpServlet {
                 cdr.timesUsed++;
                 cdr.sumUserStars += selectedCarrier.getUserscore();
             }
-            if (data.getRoundMapByRoundId().get(round).getTestround() == 0)
+            if (data.getRoundMapByRoundNumber().get(round).getTestround() == 0)
                 s.append(sprof);
             else
                 s.append("(" + sprof + ")");
             s.append("</td><td>");
-            if (data.getRoundMapByRoundId().get(round).getTestround() == 0)
+            if (data.getRoundMapByRoundNumber().get(round).getTestround() == 0)
                 s.append(ssat);
             else
                 s.append("(" + ssat + ")");
             s.append("</td><td>");
-            if (data.getRoundMapByRoundId().get(round).getTestround() == 0)
+            if (data.getRoundMapByRoundNumber().get(round).getTestround() == 0)
                 s.append(ssus);
             else
                 s.append("(" + ssus + ")");
@@ -1302,23 +1287,11 @@ public class RoundServlet extends HttpServlet {
 
         s.append("  </div>\n"); // final-score-container
         s.append("</div>\n"); // final-score
-        data.setContentHtml(s.toString());
-    }
-
-    static class CarrierDebriefRecord {
-        public int id;
-        public String name;
-        public int profit;
-        public int satisfaction;
-        public int sustainability;
-        public double fbstars;
-        public double sumUserStars;
-        public int timesUsed;
-    }
-
-    private static void handleDebrief(TrustGameData data) {
-        StringBuffer s = new StringBuffer();
-        s.append("\n<div class=\"tg-debrief\">\n");
+        
+        // DEBRIEF
+        
+        s.append("<br><br>\n");
+        s.append("<div class=\"tg-debrief\">\n");
         s.append("  <div class=\"tg-debrief-header\">Debriefing information</div>\n");
         s.append("  <div class=\"tg-debrief-hr\"></div>\n");
         s.append("  <div class=\"tg-debrief-container\">\n");
@@ -1338,7 +1311,19 @@ public class RoundServlet extends HttpServlet {
         }
         s.append("  </div>\n"); // debrief-container
         s.append("</div>\n"); // debrief
+
         data.setContentHtml(s.toString());
+    }
+
+    static class CarrierDebriefRecord {
+        public int id;
+        public String name;
+        public int profit;
+        public int satisfaction;
+        public int sustainability;
+        public double fbstars;
+        public double sumUserStars;
+        public int timesUsed;
     }
 
     public static void handleBriefing(TrustGameData data) {
