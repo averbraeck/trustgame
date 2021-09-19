@@ -355,7 +355,7 @@ public final class SqlUtils {
     }
 
     public static String makeFooterText(final TrustGameData data) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("Transport day: ");
         s.append(data.getRoundNumber());
         if (data.getRoundNumber() > data.getRoundMapByRoundId().size()) {

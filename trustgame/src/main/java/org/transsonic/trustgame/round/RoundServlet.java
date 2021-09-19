@@ -87,17 +87,15 @@ public class RoundServlet extends HttpServlet {
             if (order != null) {
                 data.setShowModalWindow(1);
                 ClientRecord client = SqlUtils.readClientFromClientId(data, order.getClientId());
-                StringBuffer s = new StringBuffer();
+                StringBuilder s = new StringBuilder();
                 s.append("        <div class=\"tg-modal-client-body\">");
                 s.append("          <div class=\"tg-modal-client-icon\">");
                 s.append("<img src=\"/trustgame/imageClient?id=" + client.getId() + "\" />");
                 s.append("</div>\n");
-                s.append("          <div class=\"tg-modal-client-text\">");
-                s.append("Client: ");
-                s.append(client.getName());
-                s.append("<br>Type: ");
+                s.append("          <div class=\"tg-modal-client-text\">\n");
                 s.append(client.getType());
-                s.append("</div>\n");
+                s.append("\n");
+                s.append("          </div>\n");
                 s.append("        </div>\n");
                 data.setModalWindowHtml(makeModalWindow("Client information", s.toString(), "clickCloseClientInfo()"));
                 LoggingUtils.insertClickOrderClient(data, "ClientInformationOpen", order.getOrdernumber().intValue(),
@@ -234,7 +232,8 @@ public class RoundServlet extends HttpServlet {
         } else if ("finishDay".equals(click)) {
             String finishText = data.getGame().getTextfinishday().replaceAll("%r",
                     String.valueOf(data.getRoundNumber()));
-            data.setModalWindowHtml(makeOkModalWindow("Finish transport day " + data.getRoundNumber(), finishText));
+            data.setModalWindowHtml(makeLogoOkModalWindow("images/202109_finish-transport-day.png",
+                    "Finish transport day " + data.getRoundNumber(), finishText));
             data.setDayButton(TrustGameData.dayButtonFinishDayInactive);
             GameuserRecord gameUser = data.getGameUser();
             gameUser.setRoundstatus(2);
@@ -670,7 +669,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static void handleCarrierOverviewContent(TrustGameData data) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-carrier-list\">\n");
         SortedSet<Integer> carrierIds = new TreeSet<>();
         for (Integer orderNr : data.getOrderCarrierMap().keySet()) {
@@ -710,7 +709,7 @@ public class RoundServlet extends HttpServlet {
 
     private static CarrierRecord handleCarrierDetails(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-carrier-details\">\n");
         s.append(carrierDetailsHeader(data, carrier));
         s.append("  <div class=\"tg-carrier-details-description\">\n");
@@ -724,7 +723,7 @@ public class RoundServlet extends HttpServlet {
 
     private static CarrierRecord handleCarrierWebsite(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-carrier-website\">\n");
         if (carrier.getCarrierwebimage() == null) {
             s.append(carrierDetailsHeader(data, carrier));
@@ -743,7 +742,7 @@ public class RoundServlet extends HttpServlet {
 
     private static CarrierRecord handleCarrierGoogle(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-carrier-website\">\n");
         if (carrier.getGoogleimage() == null) {
             s.append(carrierDetailsHeader(data, carrier));
@@ -762,7 +761,7 @@ public class RoundServlet extends HttpServlet {
 
     private static CarrierRecord handleCarrierReviews(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-carrier-reviews\">\n");
         s.append(carrierDetailsHeader(data, carrier));
         List<ReviewRecord> reviews = SqlUtils.getReviews(data, clickedCarrierId, data.getRoundNumber());
@@ -791,7 +790,7 @@ public class RoundServlet extends HttpServlet {
     private static CarrierRecord handleCarrierReport(TrustGameData data, int clickedCarrierId) {
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, clickedCarrierId);
         UsercarrierRecord userCarrier = SqlUtils.readUserCarrierForCarrierId(data, clickedCarrierId);
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         // popup if info not yet bought; contents if bought
         if (userCarrier == null) {
             s.append("\n<div class=\"tg-carrier-report-ask\">\n");
@@ -892,7 +891,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static String carrierDetailsMenu(int clickedCarrierId) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("  <div class=\"tg-carrier-details-buttons\">\n");
         s.append("    <div class=\"tg-button-small tg-carrier-details-button\" onclick=\"clickCarrierDetails(");
         s.append(clickedCarrierId);
@@ -914,7 +913,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static String carrierDetailsHeader(TrustGameData data, CarrierRecord carrier) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("  <div class=\"tg-carrier-details-row\">\n");
         s.append("    <div class=\"tg-carrier-details-icon\"><img src=\"/trustgame/imageCarrier?id=" + carrier.getId()
                 + "\" /></div>\n");
@@ -933,7 +932,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static String formatStars(double stars) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("    <div class=\"tg-quote-review-stars\">\n");
         for (double i = 0.1; i < 5.0; i += 1.0) {
             if (stars > i) {
@@ -950,7 +949,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static String scoreReviewStars(int orderId) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("    <div class=\"tg-review-stars\">\n");
         for (int i = 1; i <= 5; i++) {
             s.append("      <span onclick=\"clickGiveStars(");
@@ -965,7 +964,7 @@ public class RoundServlet extends HttpServlet {
 
     private static String displayReviewStars(double d) {
         int stars = (int) Math.round(d);
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("    <div class=\"tg-display-stars\">\n");
         for (int i = 1; i <= 5; i++) {
             s.append("      <span>");
@@ -1016,7 +1015,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static String makeModalWindow(String title, String content, String onClickClose) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("    <div class=\"tg-modal\">\n");
         s.append("      <div class=\"tg-modal-window\" id=\"tg-modal-window\">\n");
         s.append("        <div class=\"tg-modal-window-header\">");
@@ -1042,11 +1041,14 @@ public class RoundServlet extends HttpServlet {
         StringBuilder s = new StringBuilder();
         s.append("        <div class=\"tg-modal-body\">");
         s.append("          <div class=\"tg-modal-text\">\n");
+        s.append("           <table class=\"tg-modal-table\"><tr><td>\n");
+        s.append("           <img src=\"images/202109_accept-quote.png\"></td><td>\n");
         s.append("            <p>Are you sure you want to accept the quote for order #");
         s.append(order.getOrdernumber());
         s.append("<br/>offered by ");
         s.append(carrier.getName());
         s.append("?</p>\n");
+        s.append("           </td></tr></table>\n");
         s.append("          </div>\n");
         s.append("          <div class=\"tg-modal-button-row\">\n");
         s.append("            <div class=\"tg-button-small\" onclick=\"clickAcceptQuoteNo()\">No</div>\n");
@@ -1061,12 +1063,33 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static String makeOkModalWindow(String title, String htmlText) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("        <div class=\"tg-modal-body\">");
         s.append("          <div class=\"tg-modal-text\">\n");
         s.append("            <p>\n");
         s.append(htmlText);
         s.append("            </p>\n");
+        s.append("          </div>\n");
+        s.append("          <div class=\"tg-modal-button-row\">\n");
+        s.append("            <div class=\"tg-button-small\" onclick=\"clickModalWindowOk()\">OK</div>\n");
+        s.append("          </div>\n");
+        s.append("        </div>\n");
+        return makeModalWindow(title, s.toString(), "clickModalWindowOk()");
+    }
+
+    private static String makeLogoOkModalWindow(String logo, String title, String htmlText) {
+        StringBuilder s = new StringBuilder();
+        s.append("        <div class=\"tg-modal-body\">");
+        s.append("          <div class=\"tg-modal-text\">\n");
+        s.append("           <table class=\"tg-modal-table\"><tr><td>\n");
+        s.append("           <img src=\"");
+        s.append(logo);
+        s.append("\"></td><td>\n");
+        s.append("            <p>\n");
+        s.append(htmlText);
+        s.append("            </p>\n");
+        s.append("           </td></tr></table>\n");
+        s.append("          </div>\n");
         s.append("          <div class=\"tg-modal-button-row\">\n");
         s.append("            <div class=\"tg-button-small\" onclick=\"clickModalWindowOk()\">OK</div>\n");
         s.append("          </div>\n");
@@ -1075,7 +1098,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static String makeTransportOutcome(TrustGameData data, int orderId) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         OrderRecord order = SessionUtils.getOrderRecord(data, orderId);
         SelectedcarrierRecord selectedCarrier = SessionUtils.getSelectedCarrierForOrder(data, order);
         OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data, selectedCarrier.getOrdercarrierId());
@@ -1096,7 +1119,7 @@ public class RoundServlet extends HttpServlet {
         s.append("<td width=\"8%\"><img src=\"images/leaf.png\" width=\"24\" height=\"24\" /></td><td width=\"15%\">");
         s.append(orderCarrier.getOutcomesustainability());
         s.append("</td><td width=\"6%\">&nbsp;</td></tr></table>\n");
-        return makeOkModalWindow(title, s.toString());
+        return makeLogoOkModalWindow("images/202109_transport-outcome-logo.png", title, s.toString());
     }
 
     private static void handleReviewStars(TrustGameData data, int orderId, int nrStars) {
@@ -1134,7 +1157,7 @@ public class RoundServlet extends HttpServlet {
             handleOrderContent(data);
 
         // make popup
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         if (lastReview) {
             s.append(data.getGame().getTextallreviews().replaceAll("%r", String.valueOf(data.getRoundNumber()))
                     .replaceAll("%o", order.getOrdernumber().toString()).replaceAll("%c", carrier.getName()));
@@ -1142,7 +1165,8 @@ public class RoundServlet extends HttpServlet {
             s.append(data.getGame().getTextreview().replaceAll("%r", String.valueOf(data.getRoundNumber()))
                     .replaceAll("%o", order.getOrdernumber().toString()).replaceAll("%c", carrier.getName()));
         }
-        data.setModalWindowHtml(makeOkModalWindow("Thanks for your review!", s.toString()));
+        data.setModalWindowHtml(
+                makeLogoOkModalWindow("images/202109_review-picture.png", "Thanks for your review!", s.toString()));
         data.setShowModalWindow(1);
     }
 
@@ -1162,7 +1186,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     private static void handleFinalScores(TrustGameData data) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-final-score\">\n");
         s.append("  <div class=\"tg-final-score-header\">Final Scores</div>\n");
         s.append("  <div class=\"tg-final-score-hr\"></div>\n");
@@ -1287,9 +1311,9 @@ public class RoundServlet extends HttpServlet {
 
         s.append("  </div>\n"); // final-score-container
         s.append("</div>\n"); // final-score
-        
+
         // DEBRIEF
-        
+
         s.append("<br><br>\n");
         s.append("<div class=\"tg-debrief\">\n");
         s.append("  <div class=\"tg-debrief-header\">Debriefing information</div>\n");
@@ -1327,7 +1351,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     public static void handleBriefing(TrustGameData data) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-brief\">\n");
         s.append("  <div class=\"tg-brief-header\">Briefing information and Platform Support</div>\n");
         s.append("  <div class=\"tg-brief-hr\"></div>\n");
@@ -1352,7 +1376,7 @@ public class RoundServlet extends HttpServlet {
     }
 
     public static void handleHelp(TrustGameData data) {
-        StringBuffer s = new StringBuffer();
+        StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-brief\">\n");
         s.append("  <div class=\"tg-brief-header\">Help for using the FreightBooking Platform and Game</div>\n");
         s.append("  <div class=\"tg-brief-hr\"></div>\n");

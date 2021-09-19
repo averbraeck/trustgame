@@ -150,7 +150,7 @@ html, body {
     <div class="tg-login-body">
     
       <div class="tg-login-top-message">
-        <h1>Welcome to the Trust Game</h1> 
+        <h1>Welcome to the FreightBooking Game</h1> 
         <p>
           In this serious game, you are a representative of a shipping company. 
           Through a platform, you work together with different carriers to transport 
