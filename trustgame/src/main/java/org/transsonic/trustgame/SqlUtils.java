@@ -140,7 +140,7 @@ public final class SqlUtils {
                 .where(Tables.REVIEW.CARRIER_ID.eq(carrierId)).fetch();
         List<ReviewRecord> filteredList = new ArrayList<>();
         for (int rn = 1; rn <= roundNumber; rn++) {
-            RoundRecord round = data.getRoundMapByRoundNumber().get(rn);
+            RoundRecord round = data.getRoundMapByRoundNr().get(rn);
             if (round != null) { // for after last round
                 for (ReviewRecord review : reviewList) {
                     if (review.getRoundId().equals(round.getId())) {
@@ -159,7 +159,7 @@ public final class SqlUtils {
                 .where(Tables.CARRIERREVIEW.CARRIER_ID.eq(carrierId)).fetch();
         CarrierreviewRecord crr = null;
         for (int rn = 1; rn <= roundNumber; rn++) {
-            RoundRecord round = data.getRoundMapByRoundNumber().get(rn);
+            RoundRecord round = data.getRoundMapByRoundNr().get(rn);
             if (round != null) { // for end of game
                 for (CarrierreviewRecord carrierReview : carrierReviewList) {
                     if (carrierReview.getRoundId().equals(round.getId())) {
@@ -193,22 +193,22 @@ public final class SqlUtils {
 
     public static UserroundRecord readOrInsertUserRoundRecord(final TrustGameData data) {
         if (isGameFinished(data))
-            return data.getUserRoundMap().get(data.getRoundNumber() - 1);
-        UserroundRecord userRound = data.getUserRoundMap().get(data.getRoundNumber());
+            return data.getUserRoundMapByRoundNr().get(data.getRoundNumber() - 1);
+        UserroundRecord userRound = data.getUserRoundMapByRoundNr().get(data.getRoundNumber());
         if (userRound == null) {
             DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
             userRound = dslContext.newRecord(Tables.USERROUND);
             userRound.setGameplayId(data.getGamePlayId());
-            userRound.setRoundId(data.getRoundMapByRoundNumber().get(data.getRoundNumber()).getId());
+            userRound.setRoundId(data.getRoundMapByRoundNr().get(data.getRoundNumber()).getId());
             userRound.setGameuserId(data.getGameUserId());
             userRound.store();
-            data.getUserRoundMap().put(data.getRoundNumber(), userRound);
+            data.getUserRoundMapByRoundNr().put(data.getRoundNumber(), userRound);
         }
         return userRound;
     }
 
     public static boolean isGameFinished(TrustGameData data) {
-        return !data.getOrderMap().keySet().contains(data.getRoundNumber());
+        return !data.getOrderMapByRoundNr().keySet().contains(data.getRoundNumber());
     }
 
     public static void loadAttributes(HttpSession session, Integer gameUserId) {
@@ -240,7 +240,7 @@ public final class SqlUtils {
             roundMap.put(roundRecord.getRoundnumber(), roundRecord);
             roundIdMap.put(roundRecord.getId(), roundRecord);
         }
-        data.setRoundMapByRoundNumber(roundMap);
+        data.setRoundMapByRoundNr(roundMap);
         data.setRoundMapByRoundId(roundIdMap);
 
         // System.out.println("\nROUNDMAP:\n" + roundMap);
@@ -252,19 +252,19 @@ public final class SqlUtils {
                     .where(Tables.ORDER.ROUND_ID.eq(roundRecord.getId())).fetch().sortAsc(Tables.ORDER.ORDERNUMBER);
             orderMap.put(roundRecord.getRoundnumber(), orderList);
         }
-        data.setOrderMap(orderMap);
+        data.setOrderMapByRoundNr(orderMap);
 
         // System.out.println("\nORDERMAP:\n" + orderMap);
 
-        Map<Integer, List<OrdercarrierRecord>> orderCarrierMap = new HashMap<>();
+        Map<Integer, List<OrdercarrierRecord>> orderCarrierMapByOrderId = new HashMap<>();
         for (int roundNumber : orderMap.keySet()) {
             for (OrderRecord order : orderMap.get(roundNumber)) {
                 List<OrdercarrierRecord> orderCarrierList = dslContext.selectFrom(Tables.ORDERCARRIER)
                         .where(Tables.ORDERCARRIER.ORDER_ID.eq(order.getId())).fetch();
-                orderCarrierMap.put(order.getId(), orderCarrierList);
+                orderCarrierMapByOrderId.put(order.getId(), orderCarrierList);
             }
         }
-        data.setOrderCarrierMap(orderCarrierMap);
+        data.setOrderCarrierMapByOrderId(orderCarrierMapByOrderId);
 
         // System.out.println("\nORDERCARRIERMAP:\n" + orderCarrierMap);
 
@@ -300,37 +300,37 @@ public final class SqlUtils {
         List<UserroundRecord> userRoundList = dslContext.selectFrom(Tables.USERROUND)
                 .where(Tables.USERROUND.GAMEPLAY_ID.eq(data.getGamePlay().getId()))
                 .and(Tables.USERROUND.GAMEUSER_ID.eq(data.getGameUserId())).fetch();
-        SortedMap<Integer, UserroundRecord> userRoundMap = new TreeMap<>();
+        SortedMap<Integer, UserroundRecord> userRoundMapByRoundNr = new TreeMap<>();
         for (UserroundRecord userRoundRecord : userRoundList) {
-            Integer roundNumber = SessionUtils.getRoundRecord(session, userRoundRecord.getRoundId()).getId();
-            userRoundMap.put(roundNumber, userRoundRecord);
+            Integer roundNumber = SessionUtils.getRoundRecord(session, userRoundRecord.getRoundId()).getRoundnumber();
+            userRoundMapByRoundNr.put(roundNumber, userRoundRecord);
         }
-        data.setUserRoundMap(userRoundMap);
+        data.setUserRoundMapByRoundNr(userRoundMapByRoundNr);
 
         // System.out.println("\nUSERROUNDMAP:\n" + userRoundMap);
 
-        SortedMap<Integer, List<UserorderRecord>> userOrderMap = new TreeMap<>();
-        for (int roundNumber : userRoundMap.keySet()) {
-            UserroundRecord userRound = userRoundMap.get(roundNumber);
+        SortedMap<Integer, List<UserorderRecord>> userOrderMapByRoundNr = new TreeMap<>();
+        for (int roundNumber : userRoundMapByRoundNr.keySet()) {
+            UserroundRecord userRound = userRoundMapByRoundNr.get(roundNumber);
             List<UserorderRecord> userOrderList = dslContext.selectFrom(Tables.USERORDER)
                     .where(Tables.USERORDER.USERROUND_ID.eq(userRound.getId())).fetch();
-            userOrderMap.put(roundNumber, userOrderList);
+            userOrderMapByRoundNr.put(roundNumber, userOrderList);
         }
-        data.setUserOrderMap(userOrderMap);
+        data.setUserOrderMapByRoundNr(userOrderMapByRoundNr);
 
         // System.out.println("\nUSERORDERMAP:\n" + userOrderMap);
 
-        Map<Integer, SelectedcarrierRecord> selectedCarrierMap = new HashMap<>();
-        for (int roundNumber : userOrderMap.keySet()) {
-            for (UserorderRecord userOrder : userOrderMap.get(roundNumber)) {
+        Map<Integer, SelectedcarrierRecord> selectedCarrierMapByUserOrderId = new HashMap<>();
+        for (int roundNumber : userOrderMapByRoundNr.keySet()) {
+            for (UserorderRecord userOrder : userOrderMapByRoundNr.get(roundNumber)) {
                 List<SelectedcarrierRecord> selectedCarrierList = dslContext.selectFrom(Tables.SELECTEDCARRIER)
                         .where(Tables.SELECTEDCARRIER.USERORDER_ID.eq(userOrder.getId())).fetch();
                 if (selectedCarrierList.size() >= 1) {
-                    selectedCarrierMap.put(userOrder.getId(), selectedCarrierList.get(0));
+                    selectedCarrierMapByUserOrderId.put(userOrder.getId(), selectedCarrierList.get(0));
                 }
             }
         }
-        data.setSelectedCarrierMap(selectedCarrierMap);
+        data.setSelectedCarrierMapByUserOrderId(selectedCarrierMapByUserOrderId);
 
         // System.out.println("\nSELECTEDCARRIERMAP:\n" + selectedCarrierMap);
 
@@ -362,9 +362,9 @@ public final class SqlUtils {
             s.append(" (game over)");
         } else {
             s.append(" of ");
-            s.append(data.getRoundMapByRoundNumber().size());
+            s.append(data.getRoundMapByRoundNr().size());
             s.append(" days");
-            if (data.getRoundMapByRoundNumber().get(data.getRoundNumber()).getTestround() != 0) {
+            if (data.getRoundMapByRoundNr().get(data.getRoundNumber()).getTestround() != 0) {
                 s.append(" (practice round)");
             }
         }

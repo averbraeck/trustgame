@@ -112,7 +112,7 @@ public class TrustGameData {
      * filled by the SqlUtils.loadAttributes method.<br>
      * used by: server.
      */
-    private SortedMap<Integer, RoundRecord> roundMapByRoundNumber;
+    private SortedMap<Integer, RoundRecord> roundMapByRoundNr;
 
     /**
      * the static Round records for the currently played game.<br>
@@ -129,7 +129,7 @@ public class TrustGameData {
      * filled by the SqlUtils.loadAttributes method.<br>
      * used by: server.
      */
-    private SortedMap<Integer, List<OrderRecord>> orderMap;
+    private SortedMap<Integer, List<OrderRecord>> orderMapByRoundNr;
 
     /**
      * the static ordercarrier records as a map from orderID to the carriers who can serve the order.<br>
@@ -137,7 +137,7 @@ public class TrustGameData {
      * filled by the SqlUtils.loadAttributes method.<br>
      * used by: server.
      */
-    private Map<Integer, List<OrdercarrierRecord>> orderCarrierMap;
+    private Map<Integer, List<OrdercarrierRecord>> orderCarrierMapByOrderId;
 
     /**
      * the dynamic Userround records for the user playing the game.<br>
@@ -147,7 +147,7 @@ public class TrustGameData {
      * updated by RoundServlet.<br>
      * used by: server.
      */
-    private SortedMap<Integer, UserroundRecord> userRoundMap;
+    private SortedMap<Integer, UserroundRecord> userRoundMapByRoundNr;
 
     /**
      * the dynamic Userorder records as a list per round number<br>
@@ -156,7 +156,7 @@ public class TrustGameData {
      * updated by RoundServlet.<br>
      * used by: server.
      */
-    private SortedMap<Integer, List<UserorderRecord>> userOrderMap;
+    private SortedMap<Integer, List<UserorderRecord>> userOrderMapByRoundNr;
 
     /**
      * the dynamic SelectedCarrier records as a map of UserOrderId to the SelectedCarrier. <br>
@@ -165,7 +165,7 @@ public class TrustGameData {
      * updated by RoundServlet.<br>
      * used by: server.
      */
-    private Map<Integer, SelectedcarrierRecord> selectedCarrierMap;
+    private Map<Integer, SelectedcarrierRecord> selectedCarrierMapByUserOrderId;
 
     /**
      * the right-side HTML content for the currently clicked button.<br>
@@ -347,12 +347,12 @@ public class TrustGameData {
         this.mission = mission;
     }
 
-    public SortedMap<Integer, RoundRecord> getRoundMapByRoundNumber() {
-        return roundMapByRoundNumber;
+    public SortedMap<Integer, RoundRecord> getRoundMapByRoundNr() {
+        return roundMapByRoundNr;
     }
 
-    public void setRoundMapByRoundNumber(SortedMap<Integer, RoundRecord> roundMapByRoundNumber) {
-        this.roundMapByRoundNumber = roundMapByRoundNumber;
+    public void setRoundMapByRoundNr(SortedMap<Integer, RoundRecord> roundMapByRoundNr) {
+        this.roundMapByRoundNr = roundMapByRoundNr;
     }
 
     public Map<Integer, RoundRecord> getRoundMapByRoundId() {
@@ -363,44 +363,44 @@ public class TrustGameData {
         this.roundMapByRoundId = roundMapByRoundId;
     }
 
-    public SortedMap<Integer, List<OrderRecord>> getOrderMap() {
-        return orderMap;
+    public SortedMap<Integer, List<OrderRecord>> getOrderMapByRoundNr() {
+        return orderMapByRoundNr;
     }
 
-    public void setOrderMap(SortedMap<Integer, List<OrderRecord>> orderMap) {
-        this.orderMap = orderMap;
+    public void setOrderMapByRoundNr(SortedMap<Integer, List<OrderRecord>> orderMapByRoundNr) {
+        this.orderMapByRoundNr = orderMapByRoundNr;
     }
 
-    public Map<Integer, List<OrdercarrierRecord>> getOrderCarrierMap() {
-        return orderCarrierMap;
+    public Map<Integer, List<OrdercarrierRecord>> getOrderCarrierMapByOrderId() {
+        return orderCarrierMapByOrderId;
     }
 
-    public void setOrderCarrierMap(Map<Integer, List<OrdercarrierRecord>> orderCarrierMap) {
-        this.orderCarrierMap = orderCarrierMap;
+    public void setOrderCarrierMapByOrderId(Map<Integer, List<OrdercarrierRecord>> orderCarrierMapByOrderId) {
+        this.orderCarrierMapByOrderId = orderCarrierMapByOrderId;
     }
 
-    public SortedMap<Integer, UserroundRecord> getUserRoundMap() {
-        return userRoundMap;
+    public SortedMap<Integer, UserroundRecord> getUserRoundMapByRoundNr() {
+        return userRoundMapByRoundNr;
     }
 
-    public void setUserRoundMap(SortedMap<Integer, UserroundRecord> userRoundMap) {
-        this.userRoundMap = userRoundMap;
+    public void setUserRoundMapByRoundNr(SortedMap<Integer, UserroundRecord> userRoundMapByRoundNr) {
+        this.userRoundMapByRoundNr = userRoundMapByRoundNr;
     }
 
-    public SortedMap<Integer, List<UserorderRecord>> getUserOrderMap() {
-        return userOrderMap;
+    public SortedMap<Integer, List<UserorderRecord>> getUserOrderMapByRoundNr() {
+        return userOrderMapByRoundNr;
     }
 
-    public void setUserOrderMap(SortedMap<Integer, List<UserorderRecord>> userOrderMap) {
-        this.userOrderMap = userOrderMap;
+    public void setUserOrderMapByRoundNr(SortedMap<Integer, List<UserorderRecord>> userOrderMapByRoundNr) {
+        this.userOrderMapByRoundNr = userOrderMapByRoundNr;
     }
 
-    public Map<Integer, SelectedcarrierRecord> getSelectedCarrierMap() {
-        return selectedCarrierMap;
+    public Map<Integer, SelectedcarrierRecord> getSelectedCarrierMapByUserOrderId() {
+        return selectedCarrierMapByUserOrderId;
     }
 
-    public void setSelectedCarrierMap(Map<Integer, SelectedcarrierRecord> selectedCarrierMap) {
-        this.selectedCarrierMap = selectedCarrierMap;
+    public void setSelectedCarrierMapByUserOrderId(Map<Integer, SelectedcarrierRecord> selectedCarrierMapByUserOrderId) {
+        this.selectedCarrierMapByUserOrderId = selectedCarrierMapByUserOrderId;
     }
 
     public int getRoundNumber() {

@@ -111,7 +111,7 @@ public class RoundServlet extends HttpServlet {
             int clickedOrderId = Integer.parseInt(request.getParameter("clickedOrderId"));
             int roundNumber = data.getRoundNumber();
             OrderRecord order = SessionUtils.getOrderRecord(data, clickedOrderId);
-            UserroundRecord userRound = data.getUserRoundMap().get(roundNumber);
+            UserroundRecord userRound = data.getUserRoundMapByRoundNr().get(roundNumber);
             if (userRound == null) {
                 userRound = SqlUtils.readOrInsertUserRoundRecord(data); // not created yet...
             }
@@ -171,7 +171,7 @@ public class RoundServlet extends HttpServlet {
                     data.setModalWindowHtml(makeOkModalWindow("No money to buy report", s));
                     data.setShowModalWindow(1);
                     LoggingUtils.insertClick(data, "CarrierDetailsBuyReportNoMoney");
-                } else if (data.getRoundNumber() > data.getRoundMapByRoundNumber().size()) {
+                } else if (data.getRoundNumber() > data.getRoundMapByRoundNr().size()) {
                     String s = "<p>You cannot buy this report<br/>Game has finished</p>\n";
                     data.setModalWindowHtml(makeOkModalWindow("Game over: cannot buy report", s));
                     data.setShowModalWindow(1);
@@ -561,7 +561,7 @@ public class RoundServlet extends HttpServlet {
                 s.append("                    <div class=\"tg-quote-row-header-review\">Avg. Review</div>\n");
                 s.append("                    <div class=\"tg-quote-row-header-button\">Choose one</div>\n");
                 s.append("                  </div>\n");
-                for (OrdercarrierRecord orderCarrier : data.getOrderCarrierMap().get(order.getId())) {
+                for (OrdercarrierRecord orderCarrier : data.getOrderCarrierMapByOrderId().get(order.getId())) {
                     CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, orderCarrier.getCarrierId());
                     CarrierreviewRecord carrierReview = SqlUtils.getCarrierReview(data, carrier.getId(),
                             data.getRoundNumber());
@@ -672,8 +672,8 @@ public class RoundServlet extends HttpServlet {
         StringBuilder s = new StringBuilder();
         s.append("\n<div class=\"tg-carrier-list\">\n");
         SortedSet<Integer> carrierIds = new TreeSet<>();
-        for (Integer orderNr : data.getOrderCarrierMap().keySet()) {
-            for (OrdercarrierRecord orderCarrier : data.getOrderCarrierMap().get(orderNr)) {
+        for (Integer orderId : data.getOrderCarrierMapByOrderId().keySet()) {
+            for (OrdercarrierRecord orderCarrier : data.getOrderCarrierMapByOrderId().get(orderId)) {
                 carrierIds.add(orderCarrier.getCarrierId());
             }
         }
@@ -1206,8 +1206,8 @@ public class RoundServlet extends HttpServlet {
         s.append("</td></tr>\n");
 
         SortedSet<Integer> carrierIds = new TreeSet<>();
-        for (Integer orderNr : data.getOrderCarrierMap().keySet()) {
-            for (OrdercarrierRecord orderCarrier : data.getOrderCarrierMap().get(orderNr)) {
+        for (Integer orderId : data.getOrderCarrierMapByOrderId().keySet()) {
+            for (OrdercarrierRecord orderCarrier : data.getOrderCarrierMapByOrderId().get(orderId)) {
                 carrierIds.add(orderCarrier.getCarrierId());
             }
         }
@@ -1222,10 +1222,10 @@ public class RoundServlet extends HttpServlet {
             cdr.fbstars = carrierReview.getOverallstars();
         }
 
-        for (int round : data.getRoundMapByRoundNumber().keySet()) {
+        for (int round : data.getRoundMapByRoundNr().keySet()) {
             s.append("           <tr><td>");
             s.append(round);
-            if (data.getRoundMapByRoundNumber().get(round).getTestround() != 0)
+            if (data.getRoundMapByRoundNr().get(round).getTestround() != 0)
                 s.append(" (Practice)");
             s.append("</td><td>");
             int sprof = 0;
@@ -1246,17 +1246,17 @@ public class RoundServlet extends HttpServlet {
                 cdr.timesUsed++;
                 cdr.sumUserStars += selectedCarrier.getUserscore();
             }
-            if (data.getRoundMapByRoundNumber().get(round).getTestround() == 0)
+            if (data.getRoundMapByRoundNr().get(round).getTestround() == 0)
                 s.append(sprof);
             else
                 s.append("(" + sprof + ")");
             s.append("</td><td>");
-            if (data.getRoundMapByRoundNumber().get(round).getTestround() == 0)
+            if (data.getRoundMapByRoundNr().get(round).getTestround() == 0)
                 s.append(ssat);
             else
                 s.append("(" + ssat + ")");
             s.append("</td><td>");
-            if (data.getRoundMapByRoundNumber().get(round).getTestround() == 0)
+            if (data.getRoundMapByRoundNr().get(round).getTestround() == 0)
                 s.append(ssus);
             else
                 s.append("(" + ssus + ")");

@@ -43,7 +43,7 @@ public final class SessionUtils {
     }
 
     public static RoundRecord getRoundRecord(final TrustGameData data, final Integer roundId) {
-        SortedMap<Integer, RoundRecord> roundMap = data.getRoundMapByRoundNumber();
+        SortedMap<Integer, RoundRecord> roundMap = data.getRoundMapByRoundNr();
         for (RoundRecord roundRecord : roundMap.values()) {
             if (roundId.equals(roundRecord.getId()))
                 return roundRecord;
@@ -56,7 +56,7 @@ public final class SessionUtils {
     }
 
     public static OrderRecord getOrderRecord(final TrustGameData data, final Integer orderId) {
-        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMap();
+        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMapByRoundNr();
         for (int roundNumber : orderMap.keySet()) {
             for (OrderRecord orderRecord : orderMap.get(roundNumber)) {
                 if (orderId.equals(orderRecord.getId()))
@@ -71,7 +71,7 @@ public final class SessionUtils {
     }
 
     public static List<OrderRecord> getUnconfirmedOrderListForRound(final TrustGameData data, final int roundNumber) {
-        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMap();
+        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMapByRoundNr();
         if (orderMap != null && orderMap.containsKey(roundNumber)) {
             List<OrderRecord> orderList = new ArrayList<>();
             for (OrderRecord order : orderMap.get(roundNumber)) {
@@ -88,7 +88,7 @@ public final class SessionUtils {
     }
 
     public static boolean isOrderConfirmed(final TrustGameData data, final OrderRecord order) {
-        SortedMap<Integer, List<UserorderRecord>> userOrders = data.getUserOrderMap();
+        SortedMap<Integer, List<UserorderRecord>> userOrders = data.getUserOrderMapByRoundNr();
         for (int roundNumber : userOrders.keySet()) {
             for (UserorderRecord userOrder : userOrders.get(roundNumber)) {
                 if (userOrder.getOrderId().equals(order.getId()))
@@ -99,7 +99,7 @@ public final class SessionUtils {
     }
 
     public static List<OrderRecord> getConfirmedOrderListForRound(final TrustGameData data, final int roundNumber) {
-        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMap();
+        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMapByRoundNr();
         if (orderMap != null && orderMap.containsKey(roundNumber)) {
             List<OrderRecord> orderList = new ArrayList<>();
             for (OrderRecord order : orderMap.get(roundNumber)) {
@@ -116,7 +116,7 @@ public final class SessionUtils {
     }
 
     public static List<OrderRecord> getConfirmedOrderListUpToRound(final TrustGameData data, final int roundNumber) {
-        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMap();
+        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMapByRoundNr();
         List<OrderRecord> returnList = new ArrayList<>();
         for (List<OrderRecord> orderList : orderMap.values()) {
             for (OrderRecord order : orderList) {
@@ -137,7 +137,7 @@ public final class SessionUtils {
     }
 
     public static OrdercarrierRecord getOrderCarrierRecord(final TrustGameData data, final Integer orderCarrierId) {
-        Map<Integer, List<OrdercarrierRecord>> orderCarrierMap = data.getOrderCarrierMap();
+        Map<Integer, List<OrdercarrierRecord>> orderCarrierMap = data.getOrderCarrierMapByOrderId();
         for (int orderId : orderCarrierMap.keySet()) {
             for (OrdercarrierRecord orderCarrierRecord : orderCarrierMap.get(orderId)) {
                 if (orderCarrierId.equals(orderCarrierRecord.getId()))
@@ -152,7 +152,7 @@ public final class SessionUtils {
     }
 
     public static UserorderRecord getUserOrderForOrder(final TrustGameData data, final OrderRecord order) {
-        SortedMap<Integer, List<UserorderRecord>> userOrders = data.getUserOrderMap();
+        SortedMap<Integer, List<UserorderRecord>> userOrders = data.getUserOrderMapByRoundNr();
         if (userOrders == null)
             return null;
         for (int roundNumber : userOrders.keySet()) {
@@ -169,11 +169,11 @@ public final class SessionUtils {
         UserorderRecord userOrder = getUserOrderForOrder(data, order);
         if (userOrder == null)
             return null;
-        return data.getSelectedCarrierMap().get(userOrder.getId());
+        return data.getSelectedCarrierMapByUserOrderId().get(userOrder.getId());
     }
 
     public static List<OrderRecord> getAcceptedOrderListForRound(final TrustGameData data, final int roundNumber) {
-        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMap();
+        SortedMap<Integer, List<OrderRecord>> orderMap = data.getOrderMapByRoundNr();
         if (orderMap != null && orderMap.containsKey(roundNumber)) {
             List<OrderRecord> orderList = new ArrayList<>();
             for (OrderRecord order : orderMap.get(roundNumber)) {
