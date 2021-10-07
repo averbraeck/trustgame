@@ -1104,14 +1104,14 @@ public class RoundServlet extends HttpServlet {
         OrdercarrierRecord orderCarrier = SessionUtils.getOrderCarrierRecord(data, selectedCarrier.getOrdercarrierId());
         CarrierRecord carrier = SqlUtils.readCarrierFromCarrierId(data, orderCarrier.getCarrierId());
         String title = "Transport outcome day " + data.getRoundNumber() + " for order #" + order.getOrdernumber();
-        s.append("<p style=\"font-size: 1.2em;\"><b>Carrier: " + carrier.getName() + "</b></p>\n<center>");
+        s.append("<p style=\"font-size: 1.2em;\"><b>Carrier: " + carrier.getName() + "</b></p>\n");
         s.append(orderCarrier.getOutcomemessage());
-        s.append("</center><br/>\n");
+        s.append("<br/>\n");
         if (data.getRoundMapByRoundId().get(order.getRoundId().intValue()).getTestround() != 0)
             s.append("<center><i>Practice round (results not counted)</i></center>");
         s.append("<br/><table width=\"100%\"><tr><td width=\"25%\">Consequences</td>");
         s.append("<td width=\"8%\"><img src=\"images/euro.png\" width=\"24\" height=\"24\" /></td><td width=\"15%\">");
-        s.append(order.getTransportearnings() - orderCarrier.getQuoteoffer());
+        s.append(order.getTransportearnings() - orderCarrier.getQuoteoffer() + orderCarrier.getExtraprofit());
         s.append("</td>\n");
         s.append("<td width=\"8%\"><img src=\"images/smile.png\" width=\"24\" height=\"24\" /></td><td width=\"15%\">");
         s.append(orderCarrier.getOutcomesatisfaction());
@@ -1283,7 +1283,8 @@ public class RoundServlet extends HttpServlet {
         s.append("    <div class=\"tg-final-score-carrier-table\">\n");
         s.append("      <table>\n");
         s.append("        <thead><tr><td>Carrier</td><td>Times used</td><td>Your stars</td><td>FB stars</td>");
-        s.append("<td>Profit</td><td>Satisfaction</td><td>Sustainability</td></tr></thead>\n");
+        // s.append("<td>Profit</td><td>Satisfaction</td><td>Sustainability</td></tr></thead>\n");
+        s.append("</tr></thead>\n");
         s.append("        <tbody>\n");
 
         for (CarrierDebriefRecord cdr : carrierDebriefMap.values()) {
@@ -1296,12 +1297,14 @@ public class RoundServlet extends HttpServlet {
             s.append(formatStars(stars));
             s.append("</td><td>");
             s.append(formatStars(cdr.fbstars));
+            /*- Discussed with Anique 30-9-2021 to leave out
             s.append("</td><td>");
             s.append(cdr.profit);
             s.append("</td><td>");
             s.append(cdr.satisfaction);
             s.append("</td><td>");
             s.append(cdr.sustainability);
+            */
             s.append("</td></tr>\n");
         }
 
