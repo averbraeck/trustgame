@@ -1187,7 +1187,8 @@ public class RoundServlet extends HttpServlet {
 
     private static void handleFinalScores(TrustGameData data) {
         StringBuilder s = new StringBuilder();
-        s.append("\n<div class=\"tg-final-score\">\n");
+        s.append("\n<div class=\"tg-final\">\n");
+        s.append(" <div class=\"tg-final-score\">\n");
         s.append("  <div class=\"tg-final-score-header\">Final Scores</div>\n");
         s.append("  <div class=\"tg-final-score-hr\"></div>\n");
         s.append("  <div class=\"tg-final-score-container\">\n");
@@ -1313,12 +1314,12 @@ public class RoundServlet extends HttpServlet {
         s.append("    </div>\n"); // final-score-carrier-table
 
         s.append("  </div>\n"); // final-score-container
-        s.append("</div>\n"); // final-score
+        s.append(" </div>\n"); // final-score
 
         // DEBRIEF
 
         s.append("<br><br>\n");
-        s.append("<div class=\"tg-debrief\">\n");
+        s.append(" <div class=\"tg-debrief\">\n");
         s.append("  <div class=\"tg-debrief-header\">Debriefing information</div>\n");
         s.append("  <div class=\"tg-debrief-hr\"></div>\n");
         s.append("  <div class=\"tg-debrief-container\">\n");
@@ -1337,7 +1338,8 @@ public class RoundServlet extends HttpServlet {
             s.append("No detailed debriefing information available");
         }
         s.append("  </div>\n"); // debrief-container
-        s.append("</div>\n"); // debrief
+        s.append(" </div>\n"); // debrief
+        s.append("</div>\n"); // final
 
         data.setContentHtml(s.toString());
     }

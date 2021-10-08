@@ -1243,6 +1243,13 @@ html, body {
 /* FINAL SCORE SCREEN */
 /* ================== */
 
+.tg-final {
+  display: block;
+  max-height: calc(100vh - 300px);
+  max-width: calc(100vw - 500px);
+  overflow-y: auto;
+}
+
 .tg-final-score {
   flex-direction: column;
   justify-content: flex-start;
@@ -1250,7 +1257,7 @@ html, body {
 
 .tg-final-score-header {
   display: flex;
-  width: 100%;
+  width: 98%;
   align-content: left;
   font-size: 1.5em;
   font-style: normal;
@@ -1261,7 +1268,7 @@ html, body {
 .tg-final-score-hr {
   display: flex;
   position: relative;
-  width: 100%;
+  width: 98%;
   border: 2px solid orange;
 }
 
@@ -1299,20 +1306,52 @@ html, body {
   text-align: center;
 }
 
-.tg-final-score-container table > thead td {
-  font-style: italic;
-}
-
-/* ============================== */
-/* BRIEFING AND DEBRIEFING SCREEN */
-/* ============================== */
-
-.tg-debrief, .tg-brief {
+.tg-debrief {
   flex-direction: column;
   justify-content: flex-start;
 }
 
-.tg-debrief-header, .tg-brief-header {
+.tg-final-score-container table > thead td {
+  font-style: italic;
+}
+
+.tg-debrief-header {
+  display: flex;
+  width: 98%;
+  align-content: left;
+  font-size: 1.5em;
+  font-style: normal;
+  color: orange;  
+  margin-right: 20px;
+}
+
+.tg-debrief-hr {
+  display: flex;
+  position: relative;
+  width: 98%;
+  border: 2px solid orange;
+}
+
+.tg-debrief-container {
+  display: block;
+  margin-top: 20px;
+  width: 98%;
+}
+
+.tg-debrief-container img {
+  max-width: 99%;
+}
+
+/* =============== */
+/* BRIEFING SCREEN */
+/* =============== */
+
+.tg-brief {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.tg-brief-header {
   display: flex;
   width: 100%;
   align-content: left;
@@ -1322,14 +1361,14 @@ html, body {
   margin-right: 20px;
 }
 
-.tg-debrief-hr, .tg-brief-hr {
+.tg-brief-hr {
   display: flex;
   position: relative;
   width: 100%;
   border: 2px solid orange;
 }
 
-.tg-debrief-container, .tg-brief-container {
+.tg-brief-container {
   display: block;
   margin-top: 20px;
   max-height: calc(100vh - 310px);
@@ -1337,7 +1376,7 @@ html, body {
   overflow: auto;
 }
 
-.tg-debrief-container img, .tg-brief-container img {
+.tg-brief-container img {
   max-width: 99%;
 }
 
