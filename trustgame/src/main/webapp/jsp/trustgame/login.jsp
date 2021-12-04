@@ -220,6 +220,11 @@ html, body {
       <!-- logo's at top right -->
     </div>
     
-  </div>      
+  </div> <!-- tg-login-page -->
+      
+  <!-- modal window for warning / error -->
+    
+  ${trustGameData.getModalWindowHtml()}
+  
 </body>
 </html>

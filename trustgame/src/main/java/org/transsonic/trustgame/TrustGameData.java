@@ -181,6 +181,11 @@ public class TrustGameData {
      */
     private String footerText;
 
+    /**
+     * The html selection code for multiple GameUser instances that can log in.
+     */
+    private String SelectUserHtml = "";
+    
     /* ================================= */
     /* FULLY DYNAMIC INFO IN THE SESSION */
     /* ================================= */
@@ -543,6 +548,14 @@ public class TrustGameData {
 
     public void setFooterText(String footerText) {
         this.footerText = footerText;
+    }
+
+    public String getSelectUserHtml() {
+        return SelectUserHtml;
+    }
+
+    public void setSelectUserHtml(String selectUserHtml) {
+        SelectUserHtml = selectUserHtml;
     }
 
 }

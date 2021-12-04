@@ -20,17 +20,15 @@ public class SelectGameServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		if (!SessionUtils.checkLogin(request, response)) {
-			return;
-		}
 		HttpSession session = request.getSession();
 		TrustGameData data = SessionUtils.getData(session);
-		Integer gameUserId = Integer.parseInt(request.getParameter("gameUserId"));
+		Integer gameUserId = Integer.parseInt(request.getParameter("recordNr"));
 		data.setGameUserId(gameUserId);
         data.setGameUser(SqlUtils.readGameUserFromGameUserId(data, gameUserId));
         SqlUtils.loadAttributes(session, gameUserId);
 		response.sendRedirect("jsp/trustgame/round.jsp");
 	}
+
 }

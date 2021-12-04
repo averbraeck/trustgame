@@ -3,6 +3,7 @@ package org.transsonic.trustgame.login;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,8 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import javax.xml.bind.DatatypeConverter;
 
-import org.transsonic.trustgame.SessionUtils;
 import org.transsonic.trustgame.SqlUtils;
 import org.transsonic.trustgame.TrustGameData;
-import org.transsonic.trustgame.data.trustgame.tables.records.GameRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.GameplayRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.GameuserRecord;
 import org.transsonic.trustgame.data.trustgame.tables.records.UserRecord;
@@ -134,6 +133,16 @@ public class UserLoginServlet extends HttpServlet {
         }
         idSessionMap.put(user.getId(), request.getSession().getId());
         List<GameuserRecord> gameUserRecords = SqlUtils.readGameUsersFromUserId(data, user.getId());
+
+        // check validity of the game
+        LocalDateTime date = LocalDateTime.now();
+        for (int i = gameUserRecords.size() - 1; i >= 0; i--) {
+            GameplayRecord gamePlay = SqlUtils.readGamePlayFromGameUser(data, gameUserRecords.get(i));
+            if ((gamePlay.getStartplaydate() != null && date.isBefore(gamePlay.getStartplaydate()))
+                    || (gamePlay.getEndplaydate() != null && date.isAfter(gamePlay.getEndplaydate())))
+                gameUserRecords.remove(i);
+        }
+
         if (gameUserRecords.size() == 0) {
             session.removeAttribute("trustGameData");
             response.sendRedirect("jsp/trustgame/nogame.jsp");
@@ -144,6 +153,7 @@ public class UserLoginServlet extends HttpServlet {
             SqlUtils.loadAttributes(session, gameUserId);
             response.sendRedirect("jsp/trustgame/round.jsp");
         } else {
+            makeSelectUserHtml(data, gameUserRecords);
             response.sendRedirect("jsp/trustgame/selectgame.jsp");
         }
     }
@@ -156,23 +166,45 @@ public class UserLoginServlet extends HttpServlet {
             doPost(request, response);
             return;
         }
-        
+
         response.sendRedirect("jsp/trustgame/login.jsp");
     }
 
-    public static String selectGameTable(HttpServletRequest request) {
-        TrustGameData data = SessionUtils.getData(request.getSession());
-        Integer userId = (Integer) request.getSession().getAttribute("userId");
+    private void makeSelectUserHtml(TrustGameData data, List<GameuserRecord> gameUserRecords) {
         StringBuilder s = new StringBuilder();
-        s.append("<p>Select the game to play:</p>\n");
-        List<GameuserRecord> gameUserRecords = SqlUtils.readGameUsersFromUserId(data, userId);
-        for (GameuserRecord record : gameUserRecords) {
-            Integer gamePlayId = record.getValue("GamePlay_ID", Integer.class);
-            GameplayRecord gamePlay = SqlUtils.readGamePlayFromGamePlayId(data, gamePlayId);
-            GameRecord game = SqlUtils.readGameFromGamePlay(data, gamePlay);
-            s.append("<a href=\"/trustgame/selectgame?gameUserId=" + record.get("ID").toString() + "\">"
-                    + game.getName() + ", group = " + gamePlay.getGroupdescription() + "</a><br>\n");
+
+        s.append("<div class=\"tg-form\">\n");
+        s.append("  <form id=\"selectForm\" action=\"/trustgame/selectgame\" method=\"POST\" >\n");
+        s.append("    <input id=\"recordNr\" type=\"hidden\" name=\"recordNr\" value=\"0\" />\n");
+        s.append("    <fieldset>\n");
+        s.append("      <div class=\"tg-select-table\">\n");
+        s.append("        <table>\n");
+
+        s.append("          <tr>\n");
+        s.append("            <td width=\"25%\">Select&nbsp;game:</td>\n");
+        s.append("            <td width=\"75%\">\n");
+        s.append("              <select name=\"gameUser\" id=\"gameUser\" onchange=\"submitSelectedGameUser(); \">");
+        s.append("                <option value=\"0\">&nbsp;</option>\n");
+        for (GameuserRecord gameUser : gameUserRecords) {
+            GameplayRecord gamePlay = SqlUtils.readGamePlayFromGameUser(data, gameUser);
+            s.append("              <option value=\"");
+            s.append(gameUser.getId());
+            s.append("\">");
+            s.append(gamePlay.getGroupdescription());
+            s.append("</option>\n");
         }
-        return s.toString();
+        s.append("              </select>\n");
+        s.append("            </td>\n");
+        s.append("          </tr>\n");
+
+        s.append("        </table>\n");
+        s.append("      </div>\n");
+        s.append("    </fieldset>\n");
+        s.append("  </form>\n");
+        s.append("</div>\n");
+
+        s.append("<p><a href=\"/trustgame/jsp/trustgame/login.jsp\">Return to the login screen</a></p>");
+        data.setSelectUserHtml(s.toString());
     }
+
 }
