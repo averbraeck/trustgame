@@ -265,7 +265,7 @@ public class TrustGameData {
     /* ******************* */
 
     public DataSource getDataSource() {
-        return dataSource;
+        return this.dataSource;
     }
 
     public void setDataSource(DataSource dataSource) {
@@ -273,7 +273,7 @@ public class TrustGameData {
     }
 
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     public void setUsername(String username) {
@@ -281,7 +281,7 @@ public class TrustGameData {
     }
 
     public Integer getUserId() {
-        return userId;
+        return this.userId;
     }
 
     public void setUserId(Integer userId) {
@@ -289,7 +289,7 @@ public class TrustGameData {
     }
 
     public UserRecord getUser() {
-        return user;
+        return this.user;
     }
 
     public void setUser(UserRecord user) {
@@ -297,7 +297,7 @@ public class TrustGameData {
     }
 
     public Integer getGameUserId() {
-        return gameUserId;
+        return this.gameUserId;
     }
 
     public void setGameUserId(Integer gameUserId) {
@@ -305,7 +305,7 @@ public class TrustGameData {
     }
 
     public GameuserRecord getGameUser() {
-        return gameUser;
+        return this.gameUser;
     }
 
     public void setGameUser(GameuserRecord gameUser) {
@@ -313,7 +313,7 @@ public class TrustGameData {
     }
 
     public Integer getGamePlayId() {
-        return gamePlayId;
+        return this.gamePlayId;
     }
 
     public void setGamePlayId(Integer gamePlayId) {
@@ -321,7 +321,7 @@ public class TrustGameData {
     }
 
     public GameplayRecord getGamePlay() {
-        return gamePlay;
+        return this.gamePlay;
     }
 
     public void setGamePlay(GameplayRecord gamePlay) {
@@ -329,7 +329,7 @@ public class TrustGameData {
     }
 
     public Integer getGameId() {
-        return gameId;
+        return this.gameId;
     }
 
     public void setGameId(Integer gameId) {
@@ -337,7 +337,7 @@ public class TrustGameData {
     }
 
     public GameRecord getGame() {
-        return game;
+        return this.game;
     }
 
     public void setGame(GameRecord game) {
@@ -345,7 +345,7 @@ public class TrustGameData {
     }
 
     public MissionRecord getMission() {
-        return mission;
+        return this.mission;
     }
 
     public void setMission(MissionRecord mission) {
@@ -353,7 +353,7 @@ public class TrustGameData {
     }
 
     public SortedMap<Integer, RoundRecord> getRoundMapByRoundNr() {
-        return roundMapByRoundNr;
+        return this.roundMapByRoundNr;
     }
 
     public void setRoundMapByRoundNr(SortedMap<Integer, RoundRecord> roundMapByRoundNr) {
@@ -361,7 +361,7 @@ public class TrustGameData {
     }
 
     public Map<Integer, RoundRecord> getRoundMapByRoundId() {
-        return roundMapByRoundId;
+        return this.roundMapByRoundId;
     }
 
     public void setRoundMapByRoundId(Map<Integer, RoundRecord> roundMapByRoundId) {
@@ -369,7 +369,7 @@ public class TrustGameData {
     }
 
     public SortedMap<Integer, List<OrderRecord>> getOrderMapByRoundNr() {
-        return orderMapByRoundNr;
+        return this.orderMapByRoundNr;
     }
 
     public void setOrderMapByRoundNr(SortedMap<Integer, List<OrderRecord>> orderMapByRoundNr) {
@@ -377,7 +377,7 @@ public class TrustGameData {
     }
 
     public Map<Integer, List<OrdercarrierRecord>> getOrderCarrierMapByOrderId() {
-        return orderCarrierMapByOrderId;
+        return this.orderCarrierMapByOrderId;
     }
 
     public void setOrderCarrierMapByOrderId(Map<Integer, List<OrdercarrierRecord>> orderCarrierMapByOrderId) {
@@ -385,7 +385,7 @@ public class TrustGameData {
     }
 
     public SortedMap<Integer, UserroundRecord> getUserRoundMapByRoundNr() {
-        return userRoundMapByRoundNr;
+        return this.userRoundMapByRoundNr;
     }
 
     public void setUserRoundMapByRoundNr(SortedMap<Integer, UserroundRecord> userRoundMapByRoundNr) {
@@ -393,7 +393,7 @@ public class TrustGameData {
     }
 
     public SortedMap<Integer, List<UserorderRecord>> getUserOrderMapByRoundNr() {
-        return userOrderMapByRoundNr;
+        return this.userOrderMapByRoundNr;
     }
 
     public void setUserOrderMapByRoundNr(SortedMap<Integer, List<UserorderRecord>> userOrderMapByRoundNr) {
@@ -401,7 +401,7 @@ public class TrustGameData {
     }
 
     public Map<Integer, SelectedcarrierRecord> getSelectedCarrierMapByUserOrderId() {
-        return selectedCarrierMapByUserOrderId;
+        return this.selectedCarrierMapByUserOrderId;
     }
 
     public void setSelectedCarrierMapByUserOrderId(Map<Integer, SelectedcarrierRecord> selectedCarrierMapByUserOrderId) {
@@ -409,7 +409,7 @@ public class TrustGameData {
     }
 
     public int getRoundNumber() {
-        return roundNumber;
+        return this.roundNumber;
     }
 
     public void setRoundNumber(int roundNumber) {
@@ -417,7 +417,7 @@ public class TrustGameData {
     }
 
     public int getShowModalWindow() {
-        return showModalWindow;
+        return this.showModalWindow;
     }
 
     public void setShowModalWindow(int showModalWindow) {
@@ -425,7 +425,7 @@ public class TrustGameData {
     }
 
     public int getMenuChoice() {
-        return menuChoice;
+        return this.menuChoice;
     }
 
     public void setMenuChoice(int menuChoice) {
@@ -456,7 +456,7 @@ public class TrustGameData {
     }
 
     public int getContentChoice() {
-        return contentChoice;
+        return this.contentChoice;
     }
 
     public void setContentChoice(int contentChoice) {
@@ -464,7 +464,7 @@ public class TrustGameData {
     }
 
     public String getModalWindowHtml() {
-        return modalWindowHtml;
+        return this.modalWindowHtml;
     }
 
     public void setModalWindowHtml(String modalClientWindowHtml) {
@@ -472,7 +472,7 @@ public class TrustGameData {
     }
 
     public String getContentHtml() {
-        return contentHtml;
+        return this.contentHtml;
     }
 
     public void setContentHtml(String contentHtml) {
@@ -480,7 +480,7 @@ public class TrustGameData {
     }
 
     public int getCarrierDetails() {
-        return carrierDetails;
+        return this.carrierDetails;
     }
 
     public void setCarrierDetails(int carrierDetails) {
@@ -488,7 +488,7 @@ public class TrustGameData {
     }
 
     public int getCarrierId() {
-        return carrierId;
+        return this.carrierId;
     }
 
     public void setCarrierId(int carrierId) {
@@ -496,7 +496,7 @@ public class TrustGameData {
     }
 
     public String getOrgScoresOrdersHtml() {
-        return orgScoresOrdersHtml;
+        return this.orgScoresOrdersHtml;
     }
 
     public void setOrgScoresOrdersHtml(String orgScoresOrdersHtml) {
@@ -504,7 +504,7 @@ public class TrustGameData {
     }
 
     public String getMessagesHtml() {
-        return messagesHtml;
+        return this.messagesHtml;
     }
 
     public void setMessagesHtml(String messagesHtml) {
@@ -514,18 +514,18 @@ public class TrustGameData {
     public String getTopMenuButtons() {
         StringBuilder s = new StringBuilder();
         s.append("<div class=\"tg-button-large tg-content-menu-button\" onclick=\"clickBriefing()\"");
-        if (topMenuChoice == 1)
+        if (this.topMenuChoice == 1)
             s.append(" style=\" color:yellow;\"");
         s.append(">Briefing</div>\n");
         s.append("<div class=\"tg-button-large tg-content-menu-button\" onclick=\"clickPublishedOrders()\"");
-        if (topMenuChoice == 2)
+        if (this.topMenuChoice == 2)
             s.append(" style=\" color:yellow;\"");
         s.append(">Order overview</div>\n");
         s.append("<div class=\"tg-button-large tg-content-menu-button\" onclick=\"clickCarrierOverview()\"");
-        if (topMenuChoice == 3)
+        if (this.topMenuChoice == 3)
             s.append(" style=\" color:yellow;\"");
         s.append(">Carrier overview</div>\n");
-        if (dayButton.equals(dayButtonScoreOverview) && topMenuChoice == 4)
+        if (this.dayButton.equals(dayButtonScoreOverview) && this.topMenuChoice == 4)
             s.append(dayButtonScoreOverview4);
         else 
             s.append(this.dayButton);
@@ -543,7 +543,7 @@ public class TrustGameData {
     }
 
     public String getFooterText() {
-        return footerText;
+        return this.footerText;
     }
 
     public void setFooterText(String footerText) {
@@ -551,11 +551,11 @@ public class TrustGameData {
     }
 
     public String getSelectUserHtml() {
-        return SelectUserHtml;
+        return this.SelectUserHtml;
     }
 
     public void setSelectUserHtml(String selectUserHtml) {
-        SelectUserHtml = selectUserHtml;
+        this.SelectUserHtml = selectUserHtml;
     }
 
 }
