@@ -2,7 +2,7 @@ package org.transsonic.trustgame.image;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class ImageUtil {
 
